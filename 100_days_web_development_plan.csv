@@ -1,0 +1,101 @@
+day,topic,subtopics,project,difficulty,phase,estimated_hours,week
+1,HTML Fundamentals,"['HTML structure', 'Basic tags', 'Document setup']",Create your first HTML page,Beginner,Phase 1: Web Fundamentals,2,1
+2,HTML Elements & Attributes,"['Semantic HTML', 'Attributes', 'Forms basics']",Personal info form,Beginner,Phase 1: Web Fundamentals,2,1
+3,HTML Lists & Tables,"['Ordered/unordered lists', 'Tables', 'Navigation menus']",Resume with tables and lists,Beginner,Phase 1: Web Fundamentals,2,1
+4,HTML Forms & Input,"['Form elements', 'Input types', 'Validation']",Contact form,Beginner,Phase 1: Web Fundamentals,2,1
+5,HTML Media & Links,"['Images', 'Videos', 'Links', 'File paths']",Media gallery page,Beginner,Phase 1: Web Fundamentals,2,1
+6,CSS Fundamentals,"['Selectors', 'Properties', 'Colors', 'Units']",Style your HTML pages,Beginner,Phase 1: Web Fundamentals,2,1
+7,CSS Box Model,"['Margin', 'Padding', 'Border', 'Box-sizing']",Card layouts,Beginner,Phase 1: Web Fundamentals,2,1
+8,CSS Layout - Float & Position,"['Float', 'Position', 'Clear', 'Z-index']",Multi-column layout,Beginner,Phase 1: Web Fundamentals,2,2
+9,CSS Flexbox,"['Flex container', 'Flex items', 'Alignment', 'Direction']",Navigation bar with flexbox,Beginner,Phase 1: Web Fundamentals,2,2
+10,CSS Grid,"['Grid container', 'Grid items', 'Areas', 'Responsive grids']",Photo gallery with CSS Grid,Beginner,Phase 1: Web Fundamentals,2,2
+11,Responsive Design,"['Media queries', 'Viewport', 'Mobile-first']",Responsive portfolio site,Beginner,Phase 1: Web Fundamentals,2,2
+12,CSS Animations,"['Transitions', 'Keyframes', 'Transform']",Animated buttons and cards,Beginner,Phase 1: Web Fundamentals,2,2
+13,CSS Preprocessors,"['SASS/SCSS basics', 'Variables', 'Nesting']",Refactor CSS with SASS,Intermediate,Phase 1: Web Fundamentals,3,2
+14,CSS Frameworks,"['Bootstrap introduction', 'Tailwind CSS', 'Component libraries']",Bootstrap landing page,Beginner,Phase 1: Web Fundamentals,2,2
+15,Advanced CSS Concepts,"['CSS custom properties', 'CSS modules', 'BEM methodology']",Modular CSS system,Intermediate,Phase 1: Web Fundamentals,3,3
+16,JavaScript Fundamentals,"['Variables', 'Data types', 'Operators']",Simple calculator,Beginner,Phase 1: Web Fundamentals,2,3
+17,Control Structures,"['If/else', 'Loops', 'Switch statements']",Number guessing game,Beginner,Phase 1: Web Fundamentals,2,3
+18,Functions & Scope,"['Function declarations', 'Parameters', 'Scope', 'Closures']",Utility functions library,Beginner,Phase 1: Web Fundamentals,2,3
+19,Arrays & Objects,"['Array methods', 'Object properties', 'JSON']",Todo list (data only),Beginner,Phase 1: Web Fundamentals,2,3
+20,DOM Manipulation,"['Selecting elements', 'Event listeners', 'Modifying content']",Interactive todo list,Beginner,Phase 1: Web Fundamentals,2,3
+21,Advanced DOM,"['Event delegation', 'Form validation', 'Local storage']",Persistent todo app,Intermediate,Phase 1: Web Fundamentals,3,3
+22,Browser APIs,"['Fetch API', 'Geolocation', 'Web storage']",Weather app,Intermediate,Phase 1: Web Fundamentals,3,4
+23,Error Handling,"['Try/catch', 'Debugging', 'Console methods']",Robust form validation,Intermediate,Phase 1: Web Fundamentals,3,4
+24,Async JavaScript Basics,"['setTimeout', 'Callbacks', 'Promise introduction']",Timer/stopwatch app,Intermediate,Phase 1: Web Fundamentals,3,4
+25,Phase 1 Project,"['Integration', 'Testing', 'Documentation']",Complete responsive website with JS,Intermediate,Phase 1: Web Fundamentals,3,4
+26,ES6+ Features,"['Arrow functions', 'Template literals', 'Destructuring']",Refactor previous projects with ES6,Intermediate,Phase 2: Advanced Frontend,3,4
+27,Promises & Async/Await,"['Promise chains', 'Async/await', 'Error handling']",API data fetcher,Intermediate,Phase 2: Advanced Frontend,3,4
+28,Modules & Build Tools,"['ES6 modules', 'NPM basics', 'Webpack introduction']",Modular JavaScript app,Intermediate,Phase 2: Advanced Frontend,3,4
+29,Advanced Functions,"['Higher-order functions', 'Map/filter/reduce', 'Functional programming']",Data processing utility,Intermediate,Phase 2: Advanced Frontend,3,5
+30,OOP in JavaScript,"['Classes', 'Inheritance', 'Prototypes']",Game with object-oriented design,Intermediate,Phase 2: Advanced Frontend,3,5
+31,React Introduction,"['JSX', 'Components', 'Virtual DOM']",Hello React app,Intermediate,Phase 2: Advanced Frontend,3,5
+32,React Components,"['Functional components', 'Props', 'Children']",Component library,Intermediate,Phase 2: Advanced Frontend,3,5
+33,React State & Events,"['useState hook', 'Event handling', 'Forms in React']",Interactive counter app,Intermediate,Phase 2: Advanced Frontend,3,5
+34,React Lists & Keys,"['Rendering lists', 'Keys', 'Conditional rendering']",Dynamic todo app in React,Intermediate,Phase 2: Advanced Frontend,3,5
+35,React Effects,"['useEffect hook', 'Side effects', 'Cleanup']",API data display app,Intermediate,Phase 2: Advanced Frontend,3,5
+36,React Router,"['Routing', 'Navigation', 'URL parameters']",Multi-page React app,Intermediate,Phase 2: Advanced Frontend,3,6
+37,State Management,"['Context API', 'useReducer', 'Global state']",Shopping cart with global state,Advanced,Phase 2: Advanced Frontend,4,6
+38,React Performance,"['Memoization', 'useMemo', 'useCallback']",Optimized React app,Advanced,Phase 2: Advanced Frontend,4,6
+39,React Testing,"['Jest', 'React Testing Library', 'Unit tests']",Tested React components,Advanced,Phase 2: Advanced Frontend,4,6
+40,React Ecosystem,"['React tools', 'Developer tools', 'Popular libraries']",Explore React ecosystem,Intermediate,Phase 2: Advanced Frontend,3,6
+41,Project Planning,"['Requirements', 'Design', 'Architecture']",Plan React application,Advanced,Phase 2: Advanced Frontend,4,6
+42,UI Implementation,"['Component structure', 'Styling', 'Responsiveness']",Build React UI,Advanced,Phase 2: Advanced Frontend,4,6
+43,State & Logic,"['State management', 'Business logic', 'Data flow']",Implement app logic,Advanced,Phase 2: Advanced Frontend,4,7
+44,Testing & Debugging,"['Test writing', 'Debugging', 'Error boundaries']",Test React application,Advanced,Phase 2: Advanced Frontend,4,7
+45,Phase 2 Project,"['Integration', 'Optimization', 'Documentation']",Complete React application,Advanced,Phase 2: Advanced Frontend,4,7
+46,Node.js Introduction,"['Runtime environment', 'NPM', 'Modules']",First Node.js script,Intermediate,Phase 3: Backend & APIs,3,7
+47,Express.js Basics,"['Server setup', 'Routes', 'Middleware']",Basic Express server,Intermediate,Phase 3: Backend & APIs,3,7
+48,HTTP & REST,"['HTTP methods', 'Status codes', 'RESTful principles']",RESTful API design,Intermediate,Phase 3: Backend & APIs,3,7
+49,Express Middleware,"['Built-in middleware', 'Custom middleware', 'Error handling']",API with middleware,Intermediate,Phase 3: Backend & APIs,3,7
+50,File System & Environment,"['File operations', 'Environment variables', 'Configuration']",File-based API,Intermediate,Phase 3: Backend & APIs,3,8
+51,Database Fundamentals,"['SQL vs NoSQL', 'Database design', 'Relationships']",Database schema design,Intermediate,Phase 3: Backend & APIs,3,8
+52,MongoDB Basics,"['Collections', 'Documents', 'CRUD operations']",MongoDB operations,Intermediate,Phase 3: Backend & APIs,3,8
+53,Mongoose ODM,"['Schemas', 'Models', 'Validation']",Express + MongoDB app,Intermediate,Phase 3: Backend & APIs,3,8
+54,Database Operations,"['Queries', 'Aggregation', 'Indexes']",Advanced database queries,Advanced,Phase 3: Backend & APIs,4,8
+55,SQL Basics,"['PostgreSQL', 'SQL queries', 'Joins']",SQL database operations,Intermediate,Phase 3: Backend & APIs,3,8
+56,API Routes,"['CRUD routes', 'Route parameters', 'Query strings']",Complete CRUD API,Intermediate,Phase 3: Backend & APIs,3,8
+57,Data Validation,"['Input validation', 'Sanitization', 'Error responses']",Validated API endpoints,Intermediate,Phase 3: Backend & APIs,3,9
+58,Authentication Basics,"['JWT', 'Password hashing', 'Sessions']",User authentication system,Advanced,Phase 3: Backend & APIs,4,9
+59,Authorization,"['Role-based access', 'Middleware', 'Protected routes']",Protected API routes,Advanced,Phase 3: Backend & APIs,4,9
+60,API Documentation,"['Swagger', 'API docs', 'Testing tools']",Documented API,Intermediate,Phase 3: Backend & APIs,3,9
+61,File Upload,"['Multer', 'File handling', 'Cloud storage']",File upload API,Advanced,Phase 3: Backend & APIs,4,9
+62,Real-time Communication,"['WebSockets', 'Socket.io', 'Real-time events']",Real-time chat API,Advanced,Phase 3: Backend & APIs,4,9
+63,Email & Notifications,"['Email sending', 'Templates', 'Notification systems']",Email notification system,Advanced,Phase 3: Backend & APIs,4,9
+64,Caching & Performance,"['Redis', 'Caching strategies', 'Performance optimization']",Cached API responses,Advanced,Phase 3: Backend & APIs,4,10
+65,API Security,"['Rate limiting', 'CORS', 'Security headers']",Secured API,Advanced,Phase 3: Backend & APIs,4,10
+66,Project Architecture,"['MVC pattern', 'Project structure', 'Best practices']",Backend project setup,Advanced,Phase 3: Backend & APIs,4,10
+67,Database Design,"['Schema design', 'Relationships', 'Optimization']",Complete database schema,Advanced,Phase 3: Backend & APIs,4,10
+68,API Implementation,"['All CRUD operations', 'Authentication', 'Validation']",Full API implementation,Advanced,Phase 3: Backend & APIs,4,10
+69,Testing & Documentation,"['API testing', 'Unit tests', 'Documentation']",Tested and documented API,Advanced,Phase 3: Backend & APIs,4,10
+70,Phase 3 Project,"['Integration', 'Deployment prep', 'Review']",Complete backend application,Advanced,Phase 3: Backend & APIs,4,10
+71,Frontend-Backend Connection,"['API integration', 'CORS', 'Proxy setup']",Connect React to Express,Advanced,Phase 4: Full-Stack Integration,4,11
+72,Full-Stack Authentication,"['JWT implementation', 'Login/logout', 'Protected routes']",Full-stack auth system,Advanced,Phase 4: Full-Stack Integration,4,11
+73,State Management with APIs,"['API calls in React', 'Loading states', 'Error handling']",React app with API data,Advanced,Phase 4: Full-Stack Integration,4,11
+74,Form Handling,"['Form validation', 'File uploads', 'Form submission']",Full-stack forms,Advanced,Phase 4: Full-Stack Integration,4,11
+75,Real-time Features,"['WebSocket client', 'Real-time updates', 'Socket.io client']",Real-time React app,Advanced,Phase 4: Full-Stack Integration,4,11
+76,Project Planning,"['Requirements', 'Database design', 'API planning']",Plan MERN application,Advanced,Phase 4: Full-Stack Integration,4,11
+77,Backend Development,"['Express setup', 'Database connection', 'API routes']",MERN backend setup,Advanced,Phase 4: Full-Stack Integration,4,11
+78,Frontend Development,"['React setup', 'Component structure', 'Routing']",MERN frontend setup,Advanced,Phase 4: Full-Stack Integration,4,12
+79,Integration,"['API connection', 'Data flow', 'State management']",Connect MERN components,Advanced,Phase 4: Full-Stack Integration,4,12
+80,Features Implementation,"['CRUD operations', 'User interface', 'User experience']",Implement MERN features,Advanced,Phase 4: Full-Stack Integration,4,12
+81,Environment Setup,"['Production config', 'Environment variables', 'Build process']",Production configuration,Advanced,Phase 4: Full-Stack Integration,4,12
+82,Database Deployment,"['MongoDB Atlas', 'Database migration', 'Connection strings']",Deploy database,Advanced,Phase 4: Full-Stack Integration,4,12
+83,Backend Deployment,"['Heroku', 'Railway', 'Environment setup']",Deploy backend,Advanced,Phase 4: Full-Stack Integration,4,12
+84,Frontend Deployment,"['Netlify', 'Vercel', 'Build optimization']",Deploy frontend,Advanced,Phase 4: Full-Stack Integration,4,12
+85,Full Deployment,"['Domain setup', 'SSL certificates', 'Performance optimization']",Complete deployment,Advanced,Phase 4: Full-Stack Integration,4,13
+86,Performance Optimization,"['Code splitting', 'Caching', 'Image optimization']",Optimize MERN app,Advanced,Phase 4: Full-Stack Integration,4,13
+87,SEO & Analytics,"['Meta tags', 'Structured data', 'Google Analytics']",SEO optimization,Advanced,Phase 4: Full-Stack Integration,4,13
+88,Error Handling & Logging,"['Error boundaries', 'Logging systems', 'Monitoring']",Error handling system,Advanced,Phase 4: Full-Stack Integration,4,13
+89,Security Hardening,"['Input sanitization', 'XSS protection', 'Security headers']",Security implementation,Advanced,Phase 4: Full-Stack Integration,4,13
+90,Phase 4 Project,"['Integration', 'Testing', 'Documentation']",Complete MERN application,Advanced,Phase 4: Full-Stack Integration,4,13
+91,Advanced React Patterns,"['Custom hooks', 'Compound components', 'Render props']",Advanced React components,Expert,Phase 5: Advanced Topics & Portfolio,5,13
+92,GraphQL Introduction,"['GraphQL vs REST', 'Apollo Client', 'Queries and mutations']",GraphQL API client,Expert,Phase 5: Advanced Topics & Portfolio,5,14
+93,Testing Strategies,"['E2E testing', 'Cypress', 'Test automation']",Comprehensive test suite,Expert,Phase 5: Advanced Topics & Portfolio,5,14
+94,DevOps Basics,"['Docker', 'CI/CD', 'GitHub Actions']",Containerized deployment,Expert,Phase 5: Advanced Topics & Portfolio,5,14
+95,Progressive Web Apps,"['Service workers', 'Offline functionality', 'App manifest']",PWA implementation,Expert,Phase 5: Advanced Topics & Portfolio,5,14
+96,Portfolio Development,"['Portfolio design', 'Project showcase', 'Personal branding']",Developer portfolio,Advanced,Phase 5: Advanced Topics & Portfolio,4,14
+97,Code Review & Refactoring,"['Code quality', 'Best practices', 'Refactoring']",Code review and cleanup,Advanced,Phase 5: Advanced Topics & Portfolio,4,14
+98,Interview Preparation,"['Technical questions', 'Coding challenges', 'Project presentation']",Interview practice,Advanced,Phase 5: Advanced Topics & Portfolio,4,14
+99,Open Source Contribution,"['Finding projects', 'Pull requests', 'Community involvement']",Open source contribution,Advanced,Phase 5: Advanced Topics & Portfolio,4,15
+100,Celebration & Next Steps,"['Portfolio review', 'Achievement reflection', 'Career planning']",100 Days Completion Showcase,Advanced,Phase 5: Advanced Topics & Portfolio,4,15

@@ -1,0 +1,528 @@
+{
+  "skills_progression": {
+    "Core Skills": {
+      "HTML": {
+        "days": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "level": "Beginner \u2192 Intermediate",
+        "assessment_days": [
+          5,
+          25,
+          50,
+          100
+        ]
+      },
+      "CSS": {
+        "days": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "level": "Beginner \u2192 Advanced",
+        "assessment_days": [
+          15,
+          35,
+          60,
+          100
+        ]
+      },
+      "JavaScript": {
+        "days": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          26,
+          27,
+          28,
+          29,
+          30
+        ],
+        "level": "Beginner \u2192 Expert",
+        "assessment_days": [
+          25,
+          45,
+          70,
+          100
+        ]
+      },
+      "React": {
+        "days": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40
+        ],
+        "level": "Beginner \u2192 Advanced",
+        "assessment_days": [
+          40,
+          60,
+          85,
+          100
+        ]
+      },
+      "Node.js": {
+        "days": [
+          46,
+          47,
+          48,
+          49,
+          50,
+          66,
+          67,
+          68
+        ],
+        "level": "Beginner \u2192 Advanced",
+        "assessment_days": [
+          55,
+          70,
+          90,
+          100
+        ]
+      },
+      "Express.js": {
+        "days": [
+          47,
+          48,
+          49,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "level": "Beginner \u2192 Advanced",
+        "assessment_days": [
+          60,
+          75,
+          90,
+          100
+        ]
+      },
+      "MongoDB": {
+        "days": [
+          51,
+          52,
+          53,
+          54,
+          67,
+          68
+        ],
+        "level": "Beginner \u2192 Intermediate",
+        "assessment_days": [
+          55,
+          70,
+          85,
+          100
+        ]
+      },
+      "Full-Stack": {
+        "days": [
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ],
+        "level": "Beginner \u2192 Advanced",
+        "assessment_days": [
+          80,
+          90,
+          100
+        ]
+      }
+    }
+  },
+  "milestones": {
+    "Week 1 Champion": {
+      "day": 7,
+      "description": "Complete first week of HTML/CSS",
+      "badge": "\ud83c\udfc6",
+      "xp": 100
+    },
+    "JavaScript Explorer": {
+      "day": 20,
+      "description": "Master JavaScript fundamentals",
+      "badge": "\ud83d\udd0d",
+      "xp": 200
+    },
+    "Frontend Warrior": {
+      "day": 25,
+      "description": "Complete Phase 1 - Web Fundamentals",
+      "badge": "\u2694\ufe0f",
+      "xp": 500
+    },
+    "React Ninja": {
+      "day": 40,
+      "description": "Master React fundamentals",
+      "badge": "\ud83e\udd77",
+      "xp": 300
+    },
+    "Frontend Master": {
+      "day": 45,
+      "description": "Complete Phase 2 - Advanced Frontend",
+      "badge": "\ud83c\udfaf",
+      "xp": 750
+    },
+    "Backend Explorer": {
+      "day": 55,
+      "description": "Learn Node.js and databases",
+      "badge": "\ud83d\ude80",
+      "xp": 400
+    },
+    "API Architect": {
+      "day": 65,
+      "description": "Build complete APIs",
+      "badge": "\ud83c\udfd7\ufe0f",
+      "xp": 600
+    },
+    "Backend Master": {
+      "day": 70,
+      "description": "Complete Phase 3 - Backend & APIs",
+      "badge": "\ud83d\udee1\ufe0f",
+      "xp": 1000
+    },
+    "Full-Stack Hero": {
+      "day": 85,
+      "description": "Deploy complete MERN application",
+      "badge": "\ud83e\uddb8",
+      "xp": 800
+    },
+    "Integration Expert": {
+      "day": 90,
+      "description": "Complete Phase 4 - Full-Stack Integration",
+      "badge": "\ud83d\udd17",
+      "xp": 1200
+    },
+    "Code Master": {
+      "day": 100,
+      "description": "Complete 100 Days of Code Challenge!",
+      "badge": "\ud83d\udc51",
+      "xp": 2000
+    }
+  },
+  "daily_checklist": {
+    "study_tasks": [
+      {
+        "task": "Review daily topic",
+        "estimated_time": "30 min",
+        "completed": false
+      },
+      {
+        "task": "Watch tutorial/read documentation",
+        "estimated_time": "45 min",
+        "completed": false
+      },
+      {
+        "task": "Code along with examples",
+        "estimated_time": "60 min",
+        "completed": false
+      },
+      {
+        "task": "Build daily project",
+        "estimated_time": "90 min",
+        "completed": false
+      },
+      {
+        "task": "Test and debug",
+        "estimated_time": "30 min",
+        "completed": false
+      },
+      {
+        "task": "Document learning",
+        "estimated_time": "15 min",
+        "completed": false
+      },
+      {
+        "task": "Update progress",
+        "estimated_time": "10 min",
+        "completed": false
+      }
+    ],
+    "reflection_questions": [
+      "What new concept did I learn today?",
+      "What challenges did I face?",
+      "How did I overcome them?",
+      "What would I do differently?",
+      "How confident do I feel about today's topic? (1-10)"
+    ]
+  },
+  "resources": {
+    "Phase 1: Web Fundamentals": {
+      "documentation": [
+        "MDN Web Docs - HTML",
+        "MDN Web Docs - CSS",
+        "MDN Web Docs - JavaScript"
+      ],
+      "tutorials": [
+        "freeCodeCamp - Responsive Web Design",
+        "The Odin Project - Foundations",
+        "JavaScript.info"
+      ],
+      "practice": [
+        "Frontend Mentor challenges",
+        "Codepen.io for experiments",
+        "CSS Grid Garden",
+        "Flexbox Froggy"
+      ],
+      "tools": [
+        "VS Code",
+        "Chrome DevTools",
+        "Git & GitHub",
+        "Figma (for design)"
+      ]
+    },
+    "Phase 2: Advanced Frontend": {
+      "documentation": [
+        "React Documentation",
+        "ES6+ Features Guide",
+        "Webpack Documentation"
+      ],
+      "tutorials": [
+        "React Tutorial by React Team",
+        "Modern JavaScript Course",
+        "React Router Tutorial"
+      ],
+      "practice": [
+        "React projects on GitHub",
+        "CodeSandbox experiments",
+        "LeetCode JavaScript problems"
+      ],
+      "tools": [
+        "Create React App",
+        "React Developer Tools",
+        "ESLint & Prettier",
+        "Vite"
+      ]
+    },
+    "Phase 3: Backend & APIs": {
+      "documentation": [
+        "Node.js Documentation",
+        "Express.js Guide",
+        "MongoDB Manual"
+      ],
+      "tutorials": [
+        "Node.js Crash Course",
+        "Express.js Tutorial",
+        "MongoDB University"
+      ],
+      "practice": [
+        "Build REST APIs",
+        "Database design exercises",
+        "Authentication implementations"
+      ],
+      "tools": [
+        "Postman",
+        "MongoDB Compass",
+        "JWT.io",
+        "Swagger UI"
+      ]
+    },
+    "Phase 4: Full-Stack Integration": {
+      "documentation": [
+        "MERN Stack Guide",
+        "Deployment Documentation",
+        "Web Security Best Practices"
+      ],
+      "tutorials": [
+        "Full-Stack MERN Tutorial",
+        "Deployment Guides",
+        "Authentication Flow Tutorial"
+      ],
+      "practice": [
+        "Complete MERN projects",
+        "Deploy to various platforms",
+        "Performance optimization"
+      ],
+      "tools": [
+        "Docker",
+        "Heroku/Railway",
+        "Netlify/Vercel",
+        "MongoDB Atlas"
+      ]
+    },
+    "Phase 5: Advanced Topics & Portfolio": {
+      "documentation": [
+        "GraphQL Documentation",
+        "Testing Best Practices",
+        "Performance Optimization"
+      ],
+      "tutorials": [
+        "Advanced React Patterns",
+        "GraphQL Tutorial",
+        "DevOps for Developers"
+      ],
+      "practice": [
+        "Open source contributions",
+        "Portfolio projects",
+        "Technical interviews"
+      ],
+      "tools": [
+        "GraphQL Playground",
+        "Cypress",
+        "GitHub Actions",
+        "Performance DevTools"
+      ]
+    }
+  },
+  "portfolio_projects": [
+    {
+      "day": 25,
+      "project_name": "Responsive Portfolio Website",
+      "description": "Personal portfolio with HTML, CSS, and JavaScript",
+      "technologies": [
+        "HTML5",
+        "CSS3",
+        "JavaScript",
+        "Responsive Design"
+      ],
+      "difficulty": "Beginner",
+      "estimated_hours": 8,
+      "github_required": true,
+      "deployment_required": true,
+      "key_features": [
+        "Responsive design",
+        "Interactive elements",
+        "Contact form",
+        "Project showcase"
+      ]
+    },
+    {
+      "day": 45,
+      "project_name": "React Task Management App",
+      "description": "Full-featured task manager built with React",
+      "technologies": [
+        "React",
+        "React Router",
+        "Context API",
+        "Local Storage"
+      ],
+      "difficulty": "Intermediate",
+      "estimated_hours": 12,
+      "github_required": true,
+      "deployment_required": true,
+      "key_features": [
+        "CRUD operations",
+        "State management",
+        "Routing",
+        "Local persistence"
+      ]
+    },
+    {
+      "day": 70,
+      "project_name": "RESTful API with Authentication",
+      "description": "Complete backend API with user authentication",
+      "technologies": [
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "JWT",
+        "Bcrypt"
+      ],
+      "difficulty": "Advanced",
+      "estimated_hours": 15,
+      "github_required": true,
+      "deployment_required": true,
+      "key_features": [
+        "User authentication",
+        "CRUD operations",
+        "Data validation",
+        "Error handling"
+      ]
+    },
+    {
+      "day": 90,
+      "project_name": "Full-Stack MERN Application",
+      "description": "Complete web application with frontend and backend",
+      "technologies": [
+        "MongoDB",
+        "Express",
+        "React",
+        "Node.js",
+        "JWT",
+        "Stripe API"
+      ],
+      "difficulty": "Advanced",
+      "estimated_hours": 20,
+      "github_required": true,
+      "deployment_required": true,
+      "key_features": [
+        "User authentication",
+        "Payment integration",
+        "Real-time features",
+        "Responsive design"
+      ]
+    },
+    {
+      "day": 100,
+      "project_name": "Capstone Portfolio Project",
+      "description": "Showcase project demonstrating all learned skills",
+      "technologies": [
+        "Full MERN Stack",
+        "Additional libraries",
+        "DevOps tools"
+      ],
+      "difficulty": "Expert",
+      "estimated_hours": 25,
+      "github_required": true,
+      "deployment_required": true,
+      "key_features": [
+        "Advanced features",
+        "Performance optimization",
+        "SEO",
+        "Security"
+      ]
+    }
+  ],
+  "assessment_criteria": {
+    "daily_assessment": {
+      "understanding": "Rate your understanding of today's topic (1-5)",
+      "completion": "Did you complete the daily project? (Yes/No/Partial)",
+      "time_spent": "Hours spent coding today",
+      "challenges": "Main challenge faced today",
+      "next_day_prep": "What will you focus on tomorrow?"
+    },
+    "weekly_assessment": {
+      "skills_progress": "Rate progress in key skills (1-5)",
+      "project_quality": "Rate quality of weekly projects (1-5)",
+      "time_management": "How well did you manage time? (1-5)",
+      "learning_effectiveness": "How effective was your learning? (1-5)",
+      "areas_for_improvement": "What areas need more focus?"
+    },
+    "phase_assessment": {
+      "overall_confidence": "Confidence in phase topics (1-10)",
+      "project_portfolio": "Quality of phase projects (1-10)",
+      "skill_demonstration": "Can you teach these concepts? (1-10)",
+      "real_world_application": "Can you apply in real projects? (1-10)",
+      "readiness_for_next": "Ready for next phase? (1-10)"
+    }
+  }
+}
