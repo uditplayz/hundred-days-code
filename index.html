@@ -5,311 +5,332 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>100 Days of Code Challenge Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Mobile Warning -->
+    <div class="mobile-warning">
+        <div class="mobile-warning__content">
+            <h3>Desktop Experience Recommended</h3>
+            <p>This application is optimized for desktop screens (1200px+) for the best experience.</p>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="nav">
-        <div class="nav-brand">
-            <h2>💻 100 Days of Code</h2>
-        </div>
-        <div class="nav-menu">
-            <button class="nav-item active" data-view="dashboard">Dashboard</button>
-            <button class="nav-item" data-view="daily">Daily Tracker</button>
-            <button class="nav-item" data-view="progress">Progress</button>
-            <button class="nav-item" data-view="projects">Projects</button>
-            <button class="nav-item" data-view="resources">Resources</button>
-            <button class="nav-item" data-view="settings">Settings</button>
+        <div class="nav__container">
+            <div class="nav__brand">
+                <h2>100 Days Challenge</h2>
+            </div>
+            <ul class="nav__menu" role="tablist">
+                <li><button class="nav__link active" data-view="dashboard" role="tab">Dashboard</button></li>
+                <li><button class="nav__link" data-view="daily-tracker" role="tab">Daily Tracker</button></li>
+                <li><button class="nav__link" data-view="progress" role="tab">Progress</button></li>
+                <li><button class="nav__link" data-view="projects" role="tab">Projects</button></li>
+                <li><button class="nav__link" data-view="resources" role="tab">Resources</button></li>
+                <li><button class="nav__link" data-view="settings" role="tab">Settings</button></li>
+            </ul>
         </div>
     </nav>
 
-    <!-- Dashboard View -->
-    <div id="dashboard-view" class="view active">
-        <div class="container">
-            <div class="welcome-section">
-                <h1>Welcome back, Coder! 🚀</h1>
-                <p class="welcome-text">Keep pushing forward on your 100-day journey!</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-progress">
-                        <div class="progress-ring" id="overall-progress">
-                            <svg class="progress-svg" width="120" height="120">
-                                <circle cx="60" cy="60" r="50" class="progress-bg"></circle>
-                                <circle cx="60" cy="60" r="50" class="progress-fill" id="progress-circle"></circle>
-                            </svg>
-                            <div class="progress-text">
-                                <span class="progress-number" id="current-day">1</span>
-                                <span class="progress-total">/100</span>
-                            </div>
-                        </div>
-                        <h3>Overall Progress</h3>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <div class="stat-icon">📈</div>
-                        <div class="stat-info">
-                            <h3>Level <span id="user-level">1</span></h3>
-                            <p><span id="user-xp">0</span> XP</p>
-                            <div class="xp-bar">
-                                <div class="xp-fill" id="xp-progress"></div>
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Dashboard View -->
+        <section id="dashboard" class="view active" role="tabpanel">
+            <div class="dashboard">
+                <h1 class="dashboard__title">Your Coding Journey</h1>
+                
+                <div class="dashboard__grid">
+                    <!-- Progress Ring -->
+                    <div class="card progress-card">
+                        <div class="card__body">
+                            <div class="progress-ring-container">
+                                <svg class="progress-ring" width="200" height="200">
+                                    <circle class="progress-ring-bg" cx="100" cy="100" r="85" stroke-width="12" fill="transparent"/>
+                                    <circle class="progress-ring-fill" cx="100" cy="100" r="85" stroke-width="12" fill="transparent"/>
+                                </svg>
+                                <div class="progress-ring-content">
+                                    <span class="current-day">1</span>
+                                    <span class="total-days">/ 100</span>
+                                    <span class="days-label">Days</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-info">
-                            <h3><span id="streak-count">0</span> Day Streak</h3>
-                            <p>Keep it going!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <div class="stat-icon">⏰</div>
-                        <div class="stat-info">
-                            <h3><span id="total-hours">0</span> Hours</h3>
-                            <p>Time coded</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-content">
-                <div class="current-phase">
-                    <h2>Current Phase</h2>
-                    <div class="phase-card" id="current-phase-card">
-                        <h3 id="phase-title">Phase 1: Web Fundamentals</h3>
-                        <p id="phase-description">HTML, CSS, JavaScript basics, responsive design</p>
-                        <div class="phase-progress">
-                            <div class="phase-bar">
-                                <div class="phase-fill" id="phase-progress-bar"></div>
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="card stat-card">
+                            <div class="card__body">
+                                <div class="stat-icon">⚡</div>
+                                <div class="stat-value" id="current-xp">0</div>
+                                <div class="stat-label">XP</div>
+                                <div class="stat-sublabel">Level <span id="current-level">1</span></div>
                             </div>
-                            <span class="phase-text" id="phase-progress-text">Day 1 of 25</span>
                         </div>
-                    </div>
-                </div>
 
-                <div class="recent-achievements">
-                    <h2>Recent Achievements</h2>
-                    <div class="achievements-container" id="achievements-list">
-                        <div class="achievement-placeholder">
-                            <p>Complete your first day to unlock achievements! 🏆</p>
+                        <div class="card stat-card">
+                            <div class="card__body">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-value" id="current-streak">0</div>
+                                <div class="stat-label">Day Streak</div>
+                                <div class="stat-sublabel">Keep it going!</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Daily Tracker View -->
-    <div id="daily-view" class="view">
-        <div class="container">
-            <div class="daily-header">
-                <div class="day-navigation">
-                    <button class="btn btn--outline" id="prev-day">← Previous</button>
-                    <h1 class="day-title">Day <span id="daily-day-number">1</span></h1>
-                    <button class="btn btn--outline" id="next-day">Next →</button>
-                </div>
-            </div>
-
-            <div class="daily-content">
-                <div class="daily-main">
-                    <div class="topic-section">
-                        <h2 id="daily-topic">HTML Fundamentals</h2>
-                        <div class="difficulty-badge" id="daily-difficulty">Beginner</div>
-                        <p class="estimated-time">Estimated: <span id="daily-hours">2</span> hours</p>
-                        
-                        <div class="subtopics">
-                            <h3>Learning Goals</h3>
-                            <ul id="daily-subtopics">
-                                <li>HTML structure</li>
-                                <li>Basic tags</li>
-                                <li>Document setup</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="project-section">
-                            <h3>Today's Project</h3>
-                            <p id="daily-project">Create your first HTML page</p>
+                        <div class="card stat-card">
+                            <div class="card__body">
+                                <div class="stat-icon">⏰</div>
+                                <div class="stat-value" id="total-hours">0</div>
+                                <div class="stat-label">Hours Logged</div>
+                                <div class="stat-sublabel">Total time</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="tasks-section">
-                        <h3>Daily Tasks</h3>
-                        <div class="task-list">
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox" data-task="study">
-                                <span class="checkmark"></span>
-                                <span class="task-text">Study today's topic</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox" data-task="practice">
-                                <span class="checkmark"></span>
-                                <span class="task-text">Complete practice exercises</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox" data-task="project">
-                                <span class="checkmark"></span>
-                                <span class="task-text">Work on today's project</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox" data-task="document">
-                                <span class="checkmark"></span>
-                                <span class="task-text">Document learnings and progress</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="daily-sidebar">
-                    <div class="timer-section">
-                        <h3>Time Tracker</h3>
-                        <div class="timer-display">
-                            <span class="timer-time" id="timer-display">00:00:00</span>
-                        </div>
-                        <div class="timer-controls">
-                            <button class="btn btn--primary" id="timer-start">Start</button>
-                            <button class="btn btn--secondary" id="timer-pause">Pause</button>
-                            <button class="btn btn--outline" id="timer-reset">Reset</button>
-                        </div>
-                        <p class="daily-time">Today's total: <span id="daily-total-time">0h 0m</span></p>
-                    </div>
-
-                    <div class="reflection-section">
-                        <h3>Daily Reflection</h3>
-                        <div class="form-group">
-                            <label class="form-label">Understanding (1-5)</label>
-                            <select class="form-control" id="understanding-rating">
-                                <option value="">Select...</option>
-                                <option value="1">1 - Confused</option>
-                                <option value="2">2 - Struggling</option>
-                                <option value="3">3 - Getting it</option>
-                                <option value="4">4 - Confident</option>
-                                <option value="5">5 - Mastered</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Challenges</label>
-                            <textarea class="form-control" id="daily-challenges" rows="3" placeholder="What was challenging today?"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Notes</label>
-                            <textarea class="form-control" id="daily-notes" rows="3" placeholder="Key learnings, resources, etc."></textarea>
+                    <!-- Current Phase -->
+                    <div class="card phase-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Current Phase</h3>
+                            <div class="phase-info">
+                                <div class="phase-name" id="current-phase-name">Phase 1: Web Fundamentals</div>
+                                <div class="phase-description" id="current-phase-description">HTML, CSS, JavaScript basics, responsive design</div>
+                                <div class="phase-progress">
+                                    <div class="phase-progress-bar">
+                                        <div class="phase-progress-fill" id="current-phase-progress"></div>
+                                    </div>
+                                    <div class="phase-progress-text">
+                                        <span id="phase-progress-current">1</span> / <span id="phase-progress-total">25</span> days
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="complete-section">
-                        <button class="btn btn--primary btn--full-width" id="complete-day">Mark Day Complete ✓</button>
+                    <!-- Recent Achievements -->
+                    <div class="card achievements-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Recent Achievements</h3>
+                            <div class="achievements-list" id="recent-achievements">
+                                <div class="achievement-placeholder">
+                                    Complete your first day to unlock achievements!
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Progress View -->
-    <div id="progress-view" class="view">
-        <div class="container">
-            <h1>Progress Overview</h1>
-            
-            <div class="progress-charts">
-                <div class="chart-section">
-                    <h2>Daily Progress Calendar</h2>
-                    <div class="calendar-container" id="progress-calendar"></div>
+        <!-- Daily Tracker View -->
+        <section id="daily-tracker" class="view" role="tabpanel">
+            <div class="daily-tracker">
+                <div class="daily-header">
+                    <button class="btn btn--outline day-nav-btn" id="prev-day">← Previous Day</button>
+                    <h1 class="daily-title">Day <span id="tracker-current-day">1</span> of 100</h1>
+                    <button class="btn btn--outline day-nav-btn" id="next-day">Next Day →</button>
                 </div>
+
+                <div class="daily-content">
+                    <div class="daily-left">
+                        <!-- Topic Info -->
+                        <div class="card topic-card">
+                            <div class="card__body">
+                                <h2 id="daily-topic">HTML Fundamentals</h2>
+                                <div class="topic-meta">
+                                    <span class="difficulty-badge" id="daily-difficulty">Beginner</span>
+                                    <span class="time-estimate">📅 <span id="daily-time">2 hours</span></span>
+                                </div>
+                                <div class="subtopics">
+                                    <h4>Today's Focus:</h4>
+                                    <ul id="daily-subtopics">
+                                        <li>HTML structure</li>
+                                        <li>Basic tags</li>
+                                        <li>Document setup</li>
+                                    </ul>
+                                </div>
+                                <div class="daily-project">
+                                    <h4>Project:</h4>
+                                    <p id="project-description">Create your first HTML page</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Checklist -->
+                        <div class="card tasks-card">
+                            <div class="card__body">
+                                <h3 class="card-title">Daily Tasks</h3>
+                                <div class="tasks-list" id="daily-tasks">
+                                    <!-- Tasks will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="daily-right">
+                        <!-- Pomodoro Timer -->
+                        <div class="card timer-card">
+                            <div class="card__body">
+                                <h3 class="card-title">Pomodoro Timer</h3>
+                                <div class="timer-display">
+                                    <div class="timer-circle">
+                                        <svg class="timer-svg" width="180" height="180">
+                                            <circle class="timer-bg" cx="90" cy="90" r="70" stroke-width="8" fill="transparent"/>
+                                            <circle class="timer-progress" cx="90" cy="90" r="70" stroke-width="8" fill="transparent"/>
+                                        </svg>
+                                        <div class="timer-content">
+                                            <div class="timer-time" id="timer-display">25:00</div>
+                                            <div class="timer-label" id="timer-label">Focus Time</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timer-controls">
+                                    <button class="btn btn--primary" id="timer-start">Start</button>
+                                    <button class="btn btn--outline" id="timer-pause">Pause</button>
+                                    <button class="btn btn--outline" id="timer-reset">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reflection Notes -->
+                        <div class="card notes-card">
+                            <div class="card__body">
+                                <h3 class="card-title">Daily Reflection</h3>
+                                <textarea class="form-control notes-textarea" id="daily-notes" placeholder="What did you learn today? Any challenges or insights?"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Complete Day Button -->
+                        <button class="btn btn--primary btn--full-width complete-day-btn" id="complete-day">
+                            Complete Day 1 🎉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress View -->
+        <section id="progress" class="view" role="tabpanel">
+            <div class="progress-view">
+                <h1 class="progress-title">Your Progress</h1>
                 
-                <div class="chart-section">
-                    <h2>Phase Completion</h2>
-                    <div class="phases-progress" id="phases-chart"></div>
-                </div>
-                
-                <div class="chart-section">
-                    <h2>Skills Development</h2>
-                    <div class="skills-chart-container" style="position: relative; height: 300px;">
-                        <canvas id="skills-chart"></canvas>
+                <div class="progress-content">
+                    <!-- Calendar Grid -->
+                    <div class="card calendar-card">
+                        <div class="card__body">
+                            <h3 class="card-title">100 Days Calendar</h3>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Calendar will be populated by JavaScript -->
+                            </div>
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot completed"></span>
+                                    <span>Completed</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot current"></span>
+                                    <span>Current</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot future"></span>
+                                    <span>Future</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="chart-section">
-                    <h2>Achievements & Milestones</h2>
-                    <div class="milestones-container" id="all-milestones"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Projects View -->
-    <div id="projects-view" class="view">
-        <div class="container">
-            <h1>Portfolio Projects</h1>
-            <div class="projects-grid" id="projects-container"></div>
-        </div>
-    </div>
-
-    <!-- Resources View -->
-    <div id="resources-view" class="view">
-        <div class="container">
-            <h1>Learning Resources</h1>
-            <div class="resources-content" id="resources-content"></div>
-        </div>
-    </div>
-
-    <!-- Settings View -->
-    <div id="settings-view" class="view">
-        <div class="container">
-            <h1>Settings</h1>
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h2>Challenge Configuration</h2>
-                    <div class="form-group">
-                        <label class="form-label">Start Date</label>
-                        <input type="date" class="form-control" id="start-date">
+                    <!-- Phase Progress -->
+                    <div class="card phases-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Phase Progress</h3>
+                            <div class="phases-list" id="phases-progress">
+                                <!-- Phases will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Daily Goal (hours)</label>
-                        <input type="number" class="form-control" id="daily-goal" min="1" max="8" value="2">
-                    </div>
-                </div>
 
-                <div class="settings-section">
-                    <h2>Data Management</h2>
-                    <button class="btn btn--secondary" id="export-data">Export Progress Data</button>
-                    <button class="btn btn--outline" id="reset-progress">Reset All Progress</button>
-                </div>
-
-                <div class="settings-section">
-                    <h2>Appearance</h2>
-                    <div class="form-group">
-                        <label class="form-label">Theme</label>
-                        <select class="form-control" id="theme-select">
-                            <option value="system">System Default</option>
-                            <option value="light">Light Mode</option>
-                            <option value="dark">Dark Mode</option>
-                        </select>
+                    <!-- Milestones -->
+                    <div class="card milestones-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Milestones & Achievements</h3>
+                            <div class="milestones-list" id="milestones-list">
+                                <!-- Milestones will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <!-- Projects View -->
+        <section id="projects" class="view" role="tabpanel">
+            <div class="projects-view">
+                <h1 class="projects-title">Major Projects</h1>
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources View -->
+        <section id="resources" class="view" role="tabpanel">
+            <div class="resources-view">
+                <h1 class="resources-title">Learning Resources</h1>
+                <div class="resources-content" id="resources-content">
+                    <!-- Resources will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings View -->
+        <section id="settings" class="view" role="tabpanel">
+            <div class="settings-view">
+                <h1 class="settings-title">Settings</h1>
+                
+                <div class="settings-content">
+                    <div class="card settings-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Appearance</h3>
+                            <div class="setting-item">
+                                <label class="form-label" for="theme-toggle">Theme</label>
+                                <select class="form-control" id="theme-toggle">
+                                    <option value="system">System</option>
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card settings-card">
+                        <div class="card__body">
+                            <h3 class="card-title">Data Management</h3>
+                            <div class="setting-item">
+                                <button class="btn btn--outline" id="export-data">Export Progress</button>
+                                <p class="setting-description">Download your progress data as JSON</p>
+                            </div>
+                            <div class="setting-item">
+                                <button class="btn btn--outline btn--danger" id="reset-progress">Reset All Progress</button>
+                                <p class="setting-description">⚠️ This will delete all your progress permanently</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Modals -->
-    <div class="modal hidden" id="achievement-modal">
+    <div class="modal hidden" id="reset-modal">
+        <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2>🎉 Achievement Unlocked!</h2>
-            <div class="achievement-details" id="achievement-details"></div>
-            <button class="btn btn--primary" id="close-achievement">Awesome!</button>
+            <h3>Reset All Progress?</h3>
+            <p>This action cannot be undone. All your progress, achievements, and notes will be permanently deleted.</p>
+            <div class="modal-actions">
+                <button class="btn btn--outline" id="cancel-reset">Cancel</button>
+                <button class="btn btn--primary btn--danger" id="confirm-reset">Reset Everything</button>
+            </div>
         </div>
     </div>
-
-    <!-- Toast Notifications -->
-    <div class="toast-container" id="toast-container"></div>
 
     <script src="app.js"></script>
 </body>
