@@ -1,875 +1,801 @@
-// 100 Days of Code Challenge Tracker App
-class CodingChallengeApp {
+// Application Data and State
+class ChallengeTracker {
     constructor() {
         this.currentDay = 1;
-        this.currentView = 'dashboard';
-        this.timer = {
+        this.completedDays = new Set();
+        this.totalXP = 0;
+        this.currentStreak = 0;
+        this.totalHours = 0;
+        this.notes = {};
+        this.completedTasks = {};
+        this.achievements = new Set();
+        
+        // Timer state
+        this.timerState = {
+            minutes: 25,
+            seconds: 0,
             isRunning: false,
-            startTime: null,
-            elapsed: 0,
-            interval: null
+            totalSeconds: 1500, // 25 minutes
+            remainingSeconds: 1500
         };
         
-        this.init();
-    }
-
-    init() {
+        this.timerInterval = null;
+        this.currentTheme = 'system';
+        
         this.loadData();
-        this.setupEventListeners();
-        this.renderDashboard();
-        this.renderDailyTracker();
-        this.renderProgress();
-        this.renderProjects();
-        this.renderResources();
-        this.setupSettings();
-        this.applyTheme();
+        this.initializeApp();
     }
 
     // Data Management
     loadData() {
-        // Load from localStorage or use defaults
-        const savedData = localStorage.getItem('codingChallengeData');
-        if (savedData) {
-            this.data = JSON.parse(savedData);
-        } else {
-            this.data = this.getDefaultData();
+        const saved = localStorage.getItem('codeChallenge');
+        if (saved) {
+            const data = JSON.parse(saved);
+            this.currentDay = data.currentDay || 1;
+            this.completedDays = new Set(data.completedDays || []);
+            this.totalXP = data.totalXP || 0;
+            this.currentStreak = data.currentStreak || 0;
+            this.totalHours = data.totalHours || 0;
+            this.notes = data.notes || {};
+            this.completedTasks = data.completedTasks || {};
+            this.achievements = new Set(data.achievements || []);
+            this.currentTheme = data.currentTheme || 'system';
         }
-        
-        // Update current day based on start date
-        this.updateCurrentDay();
-    }
-
-    getDefaultData() {
-        return {
-            startDate: new Date().toISOString().split('T')[0],
-            currentDay: 1,
-            dailyGoal: 2,
-            totalXP: 0,
-            level: 1,
-            streak: 0,
-            totalHours: 0,
-            theme: 'system',
-            completedDays: [],
-            dailyProgress: {},
-            skills: {
-                "HTML": { level: 0, max_level: 10 },
-                "CSS": { level: 0, max_level: 10 },
-                "JavaScript": { level: 0, max_level: 10 },
-                "React": { level: 0, max_level: 10 },
-                "Node.js": { level: 0, max_level: 10 },
-                "Express.js": { level: 0, max_level: 10 },
-                "MongoDB": { level: 0, max_level: 10 },
-                "Full-Stack": { level: 0, max_level: 10 }
-            },
-            milestones: {},
-            projects: [
-                {
-                    day: 25,
-                    name: "Responsive Portfolio Website",
-                    description: "Personal portfolio with HTML, CSS, and JavaScript",
-                    technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
-                    difficulty: "Beginner",
-                    status: "Planned"
-                },
-                {
-                    day: 45,
-                    name: "React Task Management App", 
-                    description: "Full-featured task manager built with React",
-                    technologies: ["React", "React Router", "Context API", "Local Storage"],
-                    difficulty: "Intermediate",
-                    status: "Planned"
-                },
-                {
-                    day: 70,
-                    name: "RESTful API with Authentication",
-                    description: "Complete backend API with user authentication", 
-                    technologies: ["Node.js", "Express", "MongoDB", "JWT", "Bcrypt"],
-                    difficulty: "Advanced",
-                    status: "Planned"
-                },
-                {
-                    day: 90,
-                    name: "Full-Stack MERN Application",
-                    description: "Complete web application with frontend and backend",
-                    technologies: ["MongoDB", "Express", "React", "Node.js", "JWT"],
-                    difficulty: "Advanced", 
-                    status: "Planned"
-                },
-                {
-                    day: 100,
-                    name: "Capstone Portfolio Project",
-                    description: "Showcase project demonstrating all learned skills",
-                    technologies: ["Full MERN Stack", "Additional libraries", "DevOps tools"],
-                    difficulty: "Expert",
-                    status: "Planned"
-                }
-            ]
-        };
     }
 
     saveData() {
-        localStorage.setItem('codingChallengeData', JSON.stringify(this.data));
+        const data = {
+            currentDay: this.currentDay,
+            completedDays: Array.from(this.completedDays),
+            totalXP: this.totalXP,
+            currentStreak: this.currentStreak,
+            totalHours: this.totalHours,
+            notes: this.notes,
+            completedTasks: this.completedTasks,
+            achievements: Array.from(this.achievements),
+            currentTheme: this.currentTheme
+        };
+        localStorage.setItem('codeChallenge', JSON.stringify(data));
     }
 
-    updateCurrentDay() {
-        const startDate = new Date(this.data.startDate);
-        const today = new Date();
-        const daysDiff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        this.currentDay = Math.min(Math.max(daysDiff, 1), 100);
-        this.data.currentDay = this.currentDay;
+    // App Initialization
+    initializeApp() {
+        this.setupNavigation();
+        this.setupTimer();
+        this.setupSettings();
+        this.setupDailyTracker();
+        this.applyTheme();
+        this.updateAllViews();
     }
 
-    // Event Listeners
-    setupEventListeners() {
-        // Navigation - wait for DOM to be ready
-        setTimeout(() => {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const view = e.target.dataset.view;
-                    if (view) {
-                        this.switchView(view);
-                    }
-                });
+    // Navigation System
+    setupNavigation() {
+        const navLinks = document.querySelectorAll('.nav__link');
+        const views = document.querySelectorAll('.view');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetView = link.dataset.view;
+                
+                // Update navigation
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Update views
+                views.forEach(view => view.classList.remove('active'));
+                document.getElementById(targetView).classList.add('active');
+                
+                // Update view content
+                this.updateView(targetView);
             });
-
-            // Daily Tracker
-            const prevBtn = document.getElementById('prev-day');
-            const nextBtn = document.getElementById('next-day');
-            if (prevBtn) prevBtn.addEventListener('click', () => this.navigateDay(-1));
-            if (nextBtn) nextBtn.addEventListener('click', () => this.navigateDay(1));
-            
-            const timerStart = document.getElementById('timer-start');
-            const timerPause = document.getElementById('timer-pause');
-            const timerReset = document.getElementById('timer-reset');
-            const completeBtn = document.getElementById('complete-day');
-            
-            if (timerStart) timerStart.addEventListener('click', () => this.startTimer());
-            if (timerPause) timerPause.addEventListener('click', () => this.pauseTimer());
-            if (timerReset) timerReset.addEventListener('click', () => this.resetTimer());
-            if (completeBtn) completeBtn.addEventListener('click', () => this.completeDay());
-
-            // Task checkboxes
-            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', () => this.updateTaskProgress());
-            });
-
-            // Settings
-            const startDateInput = document.getElementById('start-date');
-            const dailyGoalInput = document.getElementById('daily-goal');
-            const themeSelect = document.getElementById('theme-select');
-            const exportBtn = document.getElementById('export-data');
-            const resetBtn = document.getElementById('reset-progress');
-            const closeAchievement = document.getElementById('close-achievement');
-            
-            if (startDateInput) {
-                startDateInput.addEventListener('change', (e) => {
-                    this.data.startDate = e.target.value;
-                    this.updateCurrentDay();
-                    this.saveData();
-                    this.renderDashboard();
-                });
-            }
-
-            if (dailyGoalInput) {
-                dailyGoalInput.addEventListener('change', (e) => {
-                    this.data.dailyGoal = parseInt(e.target.value);
-                    this.saveData();
-                });
-            }
-
-            if (themeSelect) {
-                themeSelect.addEventListener('change', (e) => {
-                    this.data.theme = e.target.value;
-                    this.applyTheme();
-                    this.saveData();
-                });
-            }
-
-            if (exportBtn) exportBtn.addEventListener('click', () => this.exportData());
-            if (resetBtn) resetBtn.addEventListener('click', () => this.resetProgress());
-
-            // Modal
-            if (closeAchievement) {
-                closeAchievement.addEventListener('click', () => {
-                    document.getElementById('achievement-modal').classList.add('hidden');
-                });
-            }
-        }, 100);
+        });
     }
 
-    // Navigation
-    switchView(viewName) {
-        // Update nav items
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        const activeNavItem = document.querySelector(`[data-view="${viewName}"]`);
-        if (activeNavItem) {
-            activeNavItem.classList.add('active');
-        }
-
-        // Update views
-        document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-        });
-        const activeView = document.getElementById(`${viewName}-view`);
-        if (activeView) {
-            activeView.classList.add('active');
-        }
-
-        this.currentView = viewName;
-
-        // Re-render view-specific content
-        if (viewName === 'progress') {
-            this.renderProgress();
-        } else if (viewName === 'projects') {
-            this.renderProjects();
-        } else if (viewName === 'resources') {
-            this.renderResources();
-        } else if (viewName === 'daily') {
-            this.renderDailyTracker();
+    // Update specific view content
+    updateView(viewName) {
+        switch (viewName) {
+            case 'dashboard':
+                this.updateDashboard();
+                break;
+            case 'daily-tracker':
+                this.updateDailyTracker();
+                break;
+            case 'progress':
+                this.updateProgress();
+                break;
+            case 'projects':
+                this.updateProjects();
+                break;
+            case 'resources':
+                this.updateResources();
+                break;
         }
     }
 
-    // Dashboard Rendering
-    renderDashboard() {
+    // Dashboard Updates
+    updateDashboard() {
         // Update progress ring
-        const progressPercent = (this.currentDay / 100) * 100;
-        const progressCircle = document.getElementById('progress-circle');
-        if (progressCircle) {
-            const circumference = 2 * Math.PI * 50;
-            const offset = circumference - (progressPercent / 100) * circumference;
-            progressCircle.style.strokeDashoffset = offset;
-        }
-
-        // Update current day
-        const currentDayEl = document.getElementById('current-day');
-        if (currentDayEl) currentDayEl.textContent = this.currentDay;
-
-        // Update level and XP
-        const level = Math.floor(this.data.totalXP / 1000) + 1;
-        const xpInLevel = this.data.totalXP % 1000;
-        const userLevelEl = document.getElementById('user-level');
-        const userXpEl = document.getElementById('user-xp');
-        const xpProgressEl = document.getElementById('xp-progress');
+        const progressFill = document.querySelector('.progress-ring-fill');
+        const currentDaySpan = document.querySelector('.current-day');
+        const progress = (this.completedDays.size / 100) * 534.07;
         
-        if (userLevelEl) userLevelEl.textContent = level;
-        if (userXpEl) userXpEl.textContent = this.data.totalXP;
-        if (xpProgressEl) xpProgressEl.style.width = `${(xpInLevel / 1000) * 100}%`;
+        progressFill.style.strokeDashoffset = 534.07 - progress;
+        currentDaySpan.textContent = this.completedDays.size;
 
-        // Update streak
-        const streakEl = document.getElementById('streak-count');
-        if (streakEl) streakEl.textContent = this.data.streak;
-
-        // Update total hours
-        const totalHoursEl = document.getElementById('total-hours');
-        if (totalHoursEl) totalHoursEl.textContent = Math.floor(this.data.totalHours);
+        // Update stats
+        document.getElementById('current-xp').textContent = this.totalXP.toLocaleString();
+        document.getElementById('current-level').textContent = Math.floor(this.totalXP / 1000) + 1;
+        document.getElementById('current-streak').textContent = this.currentStreak;
+        document.getElementById('total-hours').textContent = this.totalHours;
 
         // Update current phase
-        const phaseInfo = this.getCurrentPhase();
-        const phaseTitleEl = document.getElementById('phase-title');
-        const phaseDescEl = document.getElementById('phase-description');
-        const phaseTextEl = document.getElementById('phase-progress-text');
-        const phaseBarEl = document.getElementById('phase-progress-bar');
+        const currentPhase = this.getCurrentPhase();
+        document.getElementById('current-phase-name').textContent = currentPhase.name;
+        document.getElementById('current-phase-description').textContent = currentPhase.topics;
         
-        if (phaseTitleEl) phaseTitleEl.textContent = phaseInfo.name;
-        if (phaseDescEl) phaseDescEl.textContent = phaseInfo.description;
-        if (phaseTextEl) phaseTextEl.textContent = `Day ${this.currentDay} of ${phaseInfo.endDay}`;
-        
-        const phaseProgress = ((this.currentDay - phaseInfo.startDay + 1) / phaseInfo.duration) * 100;
-        if (phaseBarEl) phaseBarEl.style.width = `${Math.min(phaseProgress, 100)}%`;
+        const phaseProgress = this.getPhaseProgress(currentPhase);
+        document.getElementById('current-phase-progress').style.width = `${phaseProgress.percentage}%`;
+        document.getElementById('phase-progress-current').textContent = phaseProgress.completed;
+        document.getElementById('phase-progress-total').textContent = phaseProgress.total;
 
         // Update achievements
-        this.renderRecentAchievements();
+        this.updateRecentAchievements();
     }
 
-    getCurrentPhase() {
-        if (this.currentDay <= 25) return { name: "Phase 1: Web Fundamentals", description: "HTML, CSS, JavaScript basics, responsive design", startDay: 1, endDay: 25, duration: 25 };
-        if (this.currentDay <= 45) return { name: "Phase 2: Advanced Frontend", description: "ES6+, DOM manipulation, React fundamentals", startDay: 26, endDay: 45, duration: 20 };
-        if (this.currentDay <= 70) return { name: "Phase 3: Backend & APIs", description: "Node.js, Express, databases, API development", startDay: 46, endDay: 70, duration: 25 };
-        if (this.currentDay <= 90) return { name: "Phase 4: Full-Stack Integration", description: "MERN stack projects, authentication, deployment", startDay: 71, endDay: 90, duration: 20 };
-        return { name: "Phase 5: Advanced Topics & Portfolio", description: "Advanced concepts, optimization, portfolio completion", startDay: 91, endDay: 100, duration: 10 };
-    }
-
-    renderRecentAchievements() {
-        const achievementsContainer = document.getElementById('achievements-list');
-        if (!achievementsContainer) return;
-        
-        const earnedAchievements = Object.entries(this.getMilestones())
-            .filter(([_, milestone]) => milestone.day <= this.currentDay && this.data.milestones[milestone.day])
-            .slice(-3);
-
-        if (earnedAchievements.length === 0) {
-            achievementsContainer.innerHTML = '<div class="achievement-placeholder"><p>Complete your first day to unlock achievements! 🏆</p></div>';
-            return;
-        }
-
-        achievementsContainer.innerHTML = earnedAchievements.map(([name, milestone]) => `
-            <div class="achievement-item">
-                <div class="achievement-badge">${milestone.badge}</div>
-                <div class="achievement-info">
-                    <h4>${name}</h4>
-                    <p>${milestone.description}</p>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Daily Tracker
-    renderDailyTracker() {
+    // Daily Tracker Updates
+    updateDailyTracker() {
         const dayData = this.getDayData(this.currentDay);
         
-        const elements = {
-            'daily-day-number': this.currentDay,
-            'daily-topic': dayData.topic,
-            'daily-hours': dayData.estimated_hours,
-            'daily-project': dayData.project
-        };
-
-        Object.entries(elements).forEach(([id, value]) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = value;
-        });
-
-        const difficultyEl = document.getElementById('daily-difficulty');
-        if (difficultyEl) {
-            difficultyEl.textContent = dayData.difficulty;
-            difficultyEl.className = `difficulty-badge ${dayData.difficulty}`;
-        }
+        document.getElementById('tracker-current-day').textContent = this.currentDay;
+        document.getElementById('daily-topic').textContent = dayData.topic;
+        document.getElementById('daily-difficulty').textContent = dayData.difficulty;
+        document.getElementById('daily-time').textContent = `${dayData.estimated_hours} hours`;
+        document.getElementById('project-description').textContent = dayData.project;
 
         // Update subtopics
         const subtopicsList = document.getElementById('daily-subtopics');
-        if (subtopicsList) {
-            subtopicsList.innerHTML = dayData.subtopics.map(subtopic => `<li>${subtopic}</li>`).join('');
-        }
+        subtopicsList.innerHTML = dayData.subtopics.map(subtopic => `<li>${subtopic}</li>`).join('');
 
-        // Load daily progress
-        this.loadDailyProgress();
-
+        // Update tasks
+        this.updateDailyTasks();
+        
+        // Update complete day button
+        const completeBtn = document.getElementById('complete-day');
+        completeBtn.textContent = `Complete Day ${this.currentDay} 🎉`;
+        completeBtn.disabled = this.completedDays.has(this.currentDay);
+        
         // Update navigation buttons
-        const prevBtn = document.getElementById('prev-day');
-        const nextBtn = document.getElementById('next-day');
-        if (prevBtn) prevBtn.disabled = this.currentDay <= 1;
-        if (nextBtn) nextBtn.disabled = this.currentDay >= 100;
+        document.getElementById('prev-day').disabled = this.currentDay <= 1;
+        document.getElementById('next-day').disabled = this.currentDay >= 100;
+
+        // Load notes
+        document.getElementById('daily-notes').value = this.notes[this.currentDay] || '';
     }
 
-    getDayData(day) {
-        const sampleDays = {
-            1: { topic: "HTML Fundamentals", subtopics: ["HTML structure", "Basic tags", "Document setup"], project: "Create your first HTML page", difficulty: "Beginner", estimated_hours: 2 },
-            2: { topic: "HTML Elements & Attributes", subtopics: ["Semantic HTML", "Attributes", "Forms basics"], project: "Personal info form", difficulty: "Beginner", estimated_hours: 2 },
-            15: { topic: "JavaScript Basics", subtopics: ["Variables", "Functions", "Control flow"], project: "Interactive calculator", difficulty: "Beginner", estimated_hours: 3 },
-            25: { topic: "Phase 1 Project", subtopics: ["Integration", "Testing", "Documentation"], project: "Complete responsive website", difficulty: "Intermediate", estimated_hours: 4 },
-            35: { topic: "React Components", subtopics: ["JSX", "Props", "State"], project: "Component library", difficulty: "Intermediate", estimated_hours: 3 },
-            45: { topic: "Phase 2 Project", subtopics: ["Integration", "Optimization", "Documentation"], project: "Complete React application", difficulty: "Advanced", estimated_hours: 4 },
-            55: { topic: "Node.js & Express", subtopics: ["Server setup", "Routing", "Middleware"], project: "RESTful API", difficulty: "Advanced", estimated_hours: 4 },
-            70: { topic: "Phase 3 Project", subtopics: ["Integration", "Deployment prep", "Review"], project: "Complete backend application", difficulty: "Advanced", estimated_hours: 4 },
-            85: { topic: "MERN Integration", subtopics: ["Frontend-Backend connection", "Authentication", "Deployment"], project: "Full-stack app", difficulty: "Advanced", estimated_hours: 5 },
-            100: { topic: "Celebration & Next Steps", subtopics: ["Portfolio review", "Achievement reflection", "Career planning"], project: "100 Days Completion Showcase", difficulty: "Expert", estimated_hours: 5 }
-        };
-
-        return sampleDays[day] || {
-            topic: `Day ${day} Learning`,
-            subtopics: ["Study materials", "Practice exercises", "Project work"],
-            project: `Day ${day} project`,
-            difficulty: "Intermediate",
-            estimated_hours: 2
-        };
-    }
-
-    navigateDay(direction) {
-        const newDay = this.currentDay + direction;
-        if (newDay >= 1 && newDay <= 100) {
-            this.currentDay = newDay;
-            this.renderDailyTracker();
-        }
-    }
-
-    loadDailyProgress() {
-        const dayProgress = this.data.dailyProgress[this.currentDay] || {};
+    updateDailyTasks() {
+        const tasksList = document.getElementById('daily-tasks');
+        const dayTasks = this.completedTasks[this.currentDay] || [];
         
-        // Load task completion
-        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-            const task = checkbox.dataset.task;
-            checkbox.checked = dayProgress.tasks?.[task] || false;
-        });
+        tasksList.innerHTML = curriculum.tasks.map((task, index) => {
+            const isCompleted = dayTasks.includes(index);
+            return `
+                <div class="task-item ${isCompleted ? 'completed' : ''}" data-task-index="${index}">
+                    <div class="task-checkbox ${isCompleted ? 'checked' : ''}" data-task-index="${index}">
+                        ${isCompleted ? '✓' : ''}
+                    </div>
+                    <div class="task-info">
+                        <div class="task-text">${task.task}</div>
+                        <div class="task-time">${task.estimated_time}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
 
-        // Load reflection data
-        const elements = ['understanding-rating', 'daily-challenges', 'daily-notes'];
-        elements.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.value = dayProgress[id.replace('daily-', '').replace('-rating', '')] || '';
+        // Add task completion listeners
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', (e) => {
+                const taskIndex = parseInt(e.target.dataset.taskIndex);
+                this.toggleTask(taskIndex);
+            });
+        });
+    }
+
+    // Setup Daily Tracker interactions
+    setupDailyTracker() {
+        // Day navigation
+        document.getElementById('prev-day').addEventListener('click', () => {
+            if (this.currentDay > 1) {
+                this.currentDay--;
+                this.updateDailyTracker();
+                this.saveData();
             }
         });
 
-        // Load time
-        const dailyTime = dayProgress.time || 0;
-        this.updateDailyTimeDisplay(dailyTime);
-    }
-
-    updateTaskProgress() {
-        const dayProgress = this.data.dailyProgress[this.currentDay] || { tasks: {} };
-        
-        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-            const task = checkbox.dataset.task;
-            dayProgress.tasks[task] = checkbox.checked;
+        document.getElementById('next-day').addEventListener('click', () => {
+            if (this.currentDay < 100) {
+                this.currentDay++;
+                this.updateDailyTracker();
+                this.saveData();
+            }
         });
 
-        this.data.dailyProgress[this.currentDay] = dayProgress;
+        // Complete day button
+        document.getElementById('complete-day').addEventListener('click', () => {
+            this.completeDay();
+        });
+
+        // Notes auto-save
+        document.getElementById('daily-notes').addEventListener('input', (e) => {
+            this.notes[this.currentDay] = e.target.value;
+            this.saveData();
+        });
+    }
+
+    // Task Management
+    toggleTask(taskIndex) {
+        if (!this.completedTasks[this.currentDay]) {
+            this.completedTasks[this.currentDay] = [];
+        }
+
+        const dayTasks = this.completedTasks[this.currentDay];
+        const taskCompleted = dayTasks.includes(taskIndex);
+
+        if (taskCompleted) {
+            this.completedTasks[this.currentDay] = dayTasks.filter(t => t !== taskIndex);
+        } else {
+            dayTasks.push(taskIndex);
+            this.addXP(50); // 50 XP per task
+        }
+
+        this.updateDailyTasks();
+        this.updateDashboard();
         this.saveData();
-    }
-
-    // Timer Functions
-    startTimer() {
-        if (!this.timer.isRunning) {
-            this.timer.isRunning = true;
-            this.timer.startTime = Date.now() - this.timer.elapsed;
-            this.timer.interval = setInterval(() => this.updateTimer(), 1000);
-            
-            const startBtn = document.getElementById('timer-start');
-            const pauseBtn = document.getElementById('timer-pause');
-            if (startBtn) startBtn.textContent = 'Resume';
-            if (pauseBtn) pauseBtn.disabled = false;
-        }
-    }
-
-    pauseTimer() {
-        if (this.timer.isRunning) {
-            this.timer.isRunning = false;
-            clearInterval(this.timer.interval);
-            
-            const startBtn = document.getElementById('timer-start');
-            const pauseBtn = document.getElementById('timer-pause');
-            if (startBtn) startBtn.textContent = 'Resume';
-            if (pauseBtn) pauseBtn.disabled = true;
-        }
-    }
-
-    resetTimer() {
-        this.timer.isRunning = false;
-        this.timer.elapsed = 0;
-        clearInterval(this.timer.interval);
-        
-        const timerDisplay = document.getElementById('timer-display');
-        const startBtn = document.getElementById('timer-start');
-        const pauseBtn = document.getElementById('timer-pause');
-        
-        if (timerDisplay) timerDisplay.textContent = '00:00:00';
-        if (startBtn) startBtn.textContent = 'Start';
-        if (pauseBtn) pauseBtn.disabled = true;
-    }
-
-    updateTimer() {
-        if (this.timer.isRunning) {
-            this.timer.elapsed = Date.now() - this.timer.startTime;
-            const time = new Date(this.timer.elapsed);
-            const hours = String(Math.floor(this.timer.elapsed / 3600000)).padStart(2, '0');
-            const minutes = String(time.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(time.getUTCSeconds()).padStart(2, '0');
-            
-            const timerDisplay = document.getElementById('timer-display');
-            if (timerDisplay) {
-                timerDisplay.textContent = `${hours}:${minutes}:${seconds}`;
-            }
-        }
-    }
-
-    updateDailyTimeDisplay(totalMinutes) {
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        const dailyTimeEl = document.getElementById('daily-total-time');
-        if (dailyTimeEl) {
-            dailyTimeEl.textContent = `${hours}h ${minutes}m`;
-        }
     }
 
     completeDay() {
-        // Save reflection data
-        const dayProgress = this.data.dailyProgress[this.currentDay] || { tasks: {} };
-        
-        const understandingEl = document.getElementById('understanding-rating');
-        const challengesEl = document.getElementById('daily-challenges');
-        const notesEl = document.getElementById('daily-notes');
-        
-        if (understandingEl) dayProgress.understanding = understandingEl.value;
-        if (challengesEl) dayProgress.challenges = challengesEl.value;
-        if (notesEl) dayProgress.notes = notesEl.value;
-        
-        dayProgress.completed = true;
-        dayProgress.completedDate = new Date().toISOString();
+        if (this.completedDays.has(this.currentDay)) return;
 
-        // Add timer time to daily total
-        const timerMinutes = Math.floor(this.timer.elapsed / 60000);
-        dayProgress.time = (dayProgress.time || 0) + timerMinutes;
-
-        this.data.dailyProgress[this.currentDay] = dayProgress;
-
-        // Update stats
-        if (!this.data.completedDays.includes(this.currentDay)) {
-            this.data.completedDays.push(this.currentDay);
-            this.data.totalHours += (dayProgress.time || 0) / 60;
-            this.updateStreak();
-            this.updateSkills();
-            this.checkMilestones();
-        }
-
-        this.saveData();
-        this.showToast('Day completed successfully! 🎉', 'success');
-        this.renderDashboard();
+        this.completedDays.add(this.currentDay);
+        this.addXP(200); // 200 XP for completing a day
+        this.updateStreak();
+        this.checkAchievements();
         
-        // Move to next day if not at end
         if (this.currentDay < 100) {
             this.currentDay++;
-            this.renderDailyTracker();
         }
+        
+        this.updateAllViews();
+        this.saveData();
     }
 
-    updateStreak() {
-        // Simple streak calculation - consecutive completed days
-        let streak = 0;
-        for (let i = this.currentDay; i >= 1; i--) {
-            if (this.data.completedDays.includes(i)) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-        this.data.streak = streak;
-    }
+    // Timer System
+    setupTimer() {
+        document.getElementById('timer-start').addEventListener('click', () => {
+            this.startTimer();
+        });
 
-    updateSkills() {
-        // Update skills based on current day/phase
-        const skills = this.data.skills;
-        if (this.currentDay <= 25) {
-            skills.HTML.level = Math.min(skills.HTML.level + 0.5, skills.HTML.max_level);
-            skills.CSS.level = Math.min(skills.CSS.level + 0.5, skills.CSS.max_level);
-            skills.JavaScript.level = Math.min(skills.JavaScript.level + 0.3, skills.JavaScript.max_level);
-        } else if (this.currentDay <= 45) {
-            skills.JavaScript.level = Math.min(skills.JavaScript.level + 0.7, skills.JavaScript.max_level);
-            skills.React.level = Math.min(skills.React.level + 0.8, skills.React.max_level);
-        } else if (this.currentDay <= 70) {
-            skills["Node.js"].level = Math.min(skills["Node.js"].level + 0.6, skills["Node.js"].max_level);
-            skills["Express.js"].level = Math.min(skills["Express.js"].level + 0.6, skills["Express.js"].max_level);
-            skills.MongoDB.level = Math.min(skills.MongoDB.level + 0.5, skills.MongoDB.max_level);
-        } else {
-            skills["Full-Stack"].level = Math.min(skills["Full-Stack"].level + 0.8, skills["Full-Stack"].max_level);
-        }
-    }
+        document.getElementById('timer-pause').addEventListener('click', () => {
+            this.pauseTimer();
+        });
 
-    checkMilestones() {
-        const milestones = this.getMilestones();
-        Object.entries(milestones).forEach(([name, milestone]) => {
-            if (milestone.day === this.currentDay && !this.data.milestones[milestone.day]) {
-                this.data.milestones[milestone.day] = true;
-                this.data.totalXP += milestone.xp;
-                this.showAchievement(name, milestone);
-            }
+        document.getElementById('timer-reset').addEventListener('click', () => {
+            this.resetTimer();
         });
     }
 
-    getMilestones() {
-        return {
-            "Week 1 Champion": { day: 7, description: "Complete first week of HTML/CSS", badge: "🏆", xp: 100 },
-            "JavaScript Explorer": { day: 20, description: "Master JavaScript fundamentals", badge: "🔍", xp: 200 },
-            "Frontend Warrior": { day: 25, description: "Complete Phase 1 - Web Fundamentals", badge: "⚔️", xp: 500 },
-            "React Ninja": { day: 40, description: "Master React fundamentals", badge: "🥷", xp: 300 },
-            "Frontend Master": { day: 45, description: "Complete Phase 2 - Advanced Frontend", badge: "🎯", xp: 750 },
-            "Backend Explorer": { day: 55, description: "Learn Node.js and databases", badge: "🚀", xp: 400 },
-            "API Architect": { day: 65, description: "Build complete APIs", badge: "🏗️", xp: 600 },
-            "Backend Master": { day: 70, description: "Complete Phase 3 - Backend & APIs", badge: "🛡️", xp: 1000 },
-            "Full-Stack Hero": { day: 85, description: "Deploy complete MERN application", badge: "🦸", xp: 800 },
-            "Integration Expert": { day: 90, description: "Complete Phase 4 - Full-Stack Integration", badge: "🔗", xp: 1200 },
-            "Code Master": { day: 100, description: "Complete 100 Days of Code Challenge!", badge: "👑", xp: 2000 }
-        };
-    }
+    startTimer() {
+        if (this.timerState.isRunning) return;
 
-    showAchievement(name, milestone) {
-        const modal = document.getElementById('achievement-modal');
-        const details = document.getElementById('achievement-details');
-        
-        if (modal && details) {
-            details.innerHTML = `
-                <div class="achievement-badge">${milestone.badge}</div>
-                <h3>${name}</h3>
-                <p>${milestone.description}</p>
-                <p class="milestone-xp">+${milestone.xp} XP</p>
-            `;
+        this.timerState.isRunning = true;
+        document.getElementById('timer-start').textContent = 'Running...';
+        document.getElementById('timer-start').disabled = true;
+        document.getElementById('timer-pause').disabled = false;
+
+        this.timerInterval = setInterval(() => {
+            this.timerState.remainingSeconds--;
             
-            modal.classList.remove('hidden');
-        }
+            if (this.timerState.remainingSeconds <= 0) {
+                this.timerComplete();
+                return;
+            }
+            
+            this.updateTimerDisplay();
+        }, 1000);
     }
 
-    // Progress View
-    renderProgress() {
-        this.renderProgressCalendar();
-        this.renderPhasesProgress();
-        this.renderSkillsChart();
-        this.renderAllMilestones();
+    pauseTimer() {
+        this.timerState.isRunning = false;
+        clearInterval(this.timerInterval);
+        
+        document.getElementById('timer-start').textContent = 'Start';
+        document.getElementById('timer-start').disabled = false;
+        document.getElementById('timer-pause').disabled = true;
     }
 
-    renderProgressCalendar() {
-        const calendar = document.getElementById('progress-calendar');
-        if (!calendar) return;
+    resetTimer() {
+        this.pauseTimer();
+        this.timerState.remainingSeconds = this.timerState.totalSeconds;
+        this.updateTimerDisplay();
+    }
+
+    updateTimerDisplay() {
+        const minutes = Math.floor(this.timerState.remainingSeconds / 60);
+        const seconds = this.timerState.remainingSeconds % 60;
         
-        let html = '';
+        document.getElementById('timer-display').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         
+        // Update timer progress ring
+        const progress = 1 - (this.timerState.remainingSeconds / this.timerState.totalSeconds);
+        const circumference = 2 * Math.PI * 70;
+        const strokeDashoffset = circumference - (progress * circumference);
+        
+        document.querySelector('.timer-progress').style.strokeDashoffset = strokeDashoffset;
+    }
+
+    timerComplete() {
+        this.pauseTimer();
+        this.resetTimer();
+        
+        // Award XP and time
+        this.addXP(100); // 100 XP for completing a pomodoro
+        this.totalHours += 0.5; // 25 minutes = 0.42 hours, rounded to 0.5
+        
+        // Show completion notification
+        document.getElementById('timer-label').textContent = '🎉 Session Complete!';
+        setTimeout(() => {
+            document.getElementById('timer-label').textContent = 'Focus Time';
+        }, 3000);
+        
+        this.updateDashboard();
+        this.saveData();
+    }
+
+    // Progress View Updates
+    updateProgress() {
+        this.generateCalendar();
+        this.updatePhaseProgress();
+        this.updateMilestones();
+    }
+
+    generateCalendar() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        calendarGrid.innerHTML = '';
+
         for (let day = 1; day <= 100; day++) {
-            let className = 'calendar-day incomplete';
-            if (this.data.completedDays.includes(day)) {
-                className = 'calendar-day completed';
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+            
+            if (this.completedDays.has(day)) {
+                dayElement.classList.add('completed');
             } else if (day === this.currentDay) {
-                className = 'calendar-day current';
+                dayElement.classList.add('current');
+            } else {
+                dayElement.classList.add('future');
             }
             
-            html += `<div class="${className}" title="Day ${day}">${day}</div>`;
+            dayElement.addEventListener('click', () => {
+                this.currentDay = day;
+                this.updateDailyTracker();
+                // Switch to daily tracker view
+                document.querySelector('.nav__link[data-view="daily-tracker"]').click();
+            });
+            
+            calendarGrid.appendChild(dayElement);
         }
-        
-        calendar.innerHTML = html;
     }
 
-    renderPhasesProgress() {
-        const phases = [
-            { name: "Phase 1: Web Fundamentals", days: "1-25", start: 1, end: 25 },
-            { name: "Phase 2: Advanced Frontend", days: "26-45", start: 26, end: 45 },
-            { name: "Phase 3: Backend & APIs", days: "46-70", start: 46, end: 70 },
-            { name: "Phase 4: Full-Stack Integration", days: "71-90", start: 71, end: 90 },
-            { name: "Phase 5: Advanced Topics & Portfolio", days: "91-100", start: 91, end: 100 }
-        ];
+    updatePhaseProgress() {
+        const phasesList = document.getElementById('phases-progress');
+        phasesList.innerHTML = '';
 
-        const container = document.getElementById('phases-chart');
-        if (!container) return;
-        
-        container.innerHTML = phases.map(phase => {
-            const completedInPhase = this.data.completedDays.filter(day => day >= phase.start && day <= phase.end).length;
-            const totalInPhase = phase.end - phase.start + 1;
-            const progress = (completedInPhase / totalInPhase) * 100;
+        curriculum.phases.forEach((phase, index) => {
+            const [start, end] = phase.days.split('-').map(Number);
+            const completed = Array.from(this.completedDays).filter(day => day >= start && day <= end).length;
+            const total = end - start + 1;
+            const percentage = (completed / total) * 100;
 
-            return `
-                <div class="phase-item">
-                    <div class="phase-info">
-                        <div class="phase-name">${phase.name}</div>
-                        <div class="phase-days">Days ${phase.days} (${completedInPhase}/${totalInPhase} completed)</div>
-                    </div>
+            const phaseElement = document.createElement('div');
+            phaseElement.className = 'phase-item';
+            phaseElement.innerHTML = `
+                <div class="phase-item-header">
+                    <div class="phase-item-name">${phase.name}</div>
+                    <div class="phase-item-days">${phase.days}</div>
+                </div>
+                <div class="phase-description">${phase.topics}</div>
+                <div class="phase-item-progress">
                     <div class="phase-progress-bar">
-                        <div class="phase-fill" style="width: ${progress}%"></div>
+                        <div class="phase-progress-fill" style="width: ${percentage}%"></div>
                     </div>
+                    <div class="phase-progress-text">${completed} / ${total} days</div>
                 </div>
             `;
-        }).join('');
-    }
-
-    renderSkillsChart() {
-        const canvas = document.getElementById('skills-chart');
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        const skills = this.data.skills;
-        
-        if (window.skillsChart) {
-            window.skillsChart.destroy();
-        }
-        
-        window.skillsChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: Object.keys(skills),
-                datasets: [{
-                    label: 'Skill Level',
-                    data: Object.values(skills).map(skill => skill.level),
-                    backgroundColor: 'rgba(31, 184, 205, 0.2)',
-                    borderColor: '#1FB8CD',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#1FB8CD',
-                    pointBorderColor: '#1FB8CD',
-                    pointHoverBackgroundColor: '#FFC185',
-                    pointHoverBorderColor: '#FFC185'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 10,
-                        ticks: {
-                            stepSize: 2
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
+            
+            phasesList.appendChild(phaseElement);
         });
     }
 
-    renderAllMilestones() {
-        const milestones = this.getMilestones();
-        const container = document.getElementById('all-milestones');
-        if (!container) return;
-        
-        container.innerHTML = Object.entries(milestones).map(([name, milestone]) => {
-            const isEarned = this.data.milestones[milestone.day] || false;
-            const className = isEarned ? 'milestone-item earned' : 'milestone-item';
+    updateMilestones() {
+        const milestonesList = document.getElementById('milestones-list');
+        milestonesList.innerHTML = '';
+
+        Object.entries(curriculum.milestones).forEach(([name, milestone]) => {
+            const isUnlocked = this.completedDays.has(milestone.day) || this.achievements.has(name);
             
-            return `
-                <div class="${className}">
-                    <div class="milestone-badge">${milestone.badge}</div>
-                    <div class="milestone-details">
-                        <h4>${name}</h4>
-                        <p>${milestone.description}</p>
-                        <div class="milestone-xp">Day ${milestone.day} • ${milestone.xp} XP</div>
-                    </div>
+            const milestoneElement = document.createElement('div');
+            milestoneElement.className = `milestone-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            milestoneElement.innerHTML = `
+                <div class="milestone-badge">${milestone.badge}</div>
+                <div class="milestone-info">
+                    <h4>${name}</h4>
+                    <p class="milestone-description">${milestone.description}</p>
                 </div>
+                <div class="milestone-xp">+${milestone.xp} XP</div>
             `;
-        }).join('');
+            
+            milestonesList.appendChild(milestoneElement);
+        });
     }
 
     // Projects View
-    renderProjects() {
-        const container = document.getElementById('projects-container');
-        if (!container) return;
-        
-        container.innerHTML = this.data.projects.map(project => `
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-day">Day ${project.day}</div>
-                    <div class="project-status ${project.status}">${project.status}</div>
+    updateProjects() {
+        const projectsGrid = document.getElementById('projects-grid');
+        projectsGrid.innerHTML = '';
+
+        curriculum.projects.forEach(project => {
+            const isCompleted = this.completedDays.has(project.day);
+            
+            const projectElement = document.createElement('div');
+            projectElement.className = 'card project-card';
+            projectElement.innerHTML = `
+                <div class="card__body">
+                    <div class="project-header">
+                        <h3 class="project-name">${project.name}</h3>
+                        <div class="project-day">Day ${project.day}</div>
+                    </div>
+                    <p class="project-description">${project.description}</p>
+                    <div class="project-technologies">
+                        ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                    </div>
+                    <div class="project-difficulty difficulty-badge">${project.difficulty}</div>
+                    ${isCompleted ? '<div class="status status--success">✅ Completed</div>' : ''}
                 </div>
-                <h3 class="project-title">${project.name}</h3>
-                <p class="project-description">${project.description}</p>
-                <div class="project-technologies">
-                    ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                </div>
-                <div class="difficulty-badge ${project.difficulty}">${project.difficulty}</div>
-            </div>
-        `).join('');
+            `;
+            
+            projectsGrid.appendChild(projectElement);
+        });
     }
 
     // Resources View
-    renderResources() {
+    updateResources() {
+        const resourcesContent = document.getElementById('resources-content');
+        resourcesContent.innerHTML = '';
+
         const resources = {
-            "Phase 1: Web Fundamentals": {
-                documentation: ["MDN Web Docs - HTML", "MDN Web Docs - CSS", "MDN Web Docs - JavaScript"],
-                tutorials: ["freeCodeCamp - Responsive Web Design", "The Odin Project - Foundations", "JavaScript.info"],
-                practice: ["Frontend Mentor challenges", "Codepen.io for experiments", "CSS Grid Garden", "Flexbox Froggy"],
-                tools: ["VS Code", "Chrome DevTools", "Git & GitHub", "Figma (for design)"]
+            'Phase 1: Web Fundamentals': {
+                'Documentation': [
+                    'MDN Web Docs - HTML',
+                    'MDN Web Docs - CSS', 
+                    'MDN Web Docs - JavaScript'
+                ],
+                'Tutorials': [
+                    'freeCodeCamp - Responsive Web Design',
+                    'CSS-Tricks Complete Guide',
+                    'JavaScript.info'
+                ],
+                'Tools': [
+                    'VS Code',
+                    'Chrome DevTools',
+                    'Codepen'
+                ]
             },
-            "Phase 2: Advanced Frontend": {
-                documentation: ["React Documentation", "ES6+ Features Guide", "Webpack Documentation"],
-                tutorials: ["React Tutorial by React Team", "Modern JavaScript Course", "React Router Tutorial"],
-                practice: ["React projects on GitHub", "CodeSandbox experiments", "LeetCode JavaScript problems"],
-                tools: ["Create React App", "React Developer Tools", "ESLint & Prettier", "Vite"]
+            'Phase 2: Advanced Frontend': {
+                'Documentation': [
+                    'React Official Docs',
+                    'ES6 Features Guide',
+                    'Webpack Documentation'
+                ],
+                'Tutorials': [
+                    'React Tutorial - Official',
+                    'Modern JavaScript Course',
+                    'Advanced CSS Techniques'
+                ],
+                'Tools': [
+                    'Create React App',
+                    'Node.js',
+                    'npm/yarn'
+                ]
             },
-            "Phase 3: Backend & APIs": {
-                documentation: ["Node.js Documentation", "Express.js Guide", "MongoDB Manual"],
-                tutorials: ["Node.js Crash Course", "Building RESTful APIs", "Database Design Basics"],
-                practice: ["API challenges", "Database exercises", "Authentication tutorials"],
-                tools: ["Postman", "MongoDB Compass", "Nodemon", "JWT.io"]
+            'Phase 3: Backend & APIs': {
+                'Documentation': [
+                    'Node.js Documentation',
+                    'Express.js Guide',
+                    'MongoDB Manual'
+                ],
+                'Tutorials': [
+                    'Node.js Complete Course',
+                    'RESTful API Design',
+                    'Database Design Patterns'
+                ],
+                'Tools': [
+                    'Postman',
+                    'MongoDB Compass',
+                    'Heroku CLI'
+                ]
             },
-            "Phase 4: Full-Stack Integration": {
-                documentation: ["MERN Stack Guide", "Deployment Best Practices", "Testing Documentation"],
-                tutorials: ["Full-Stack Project Tutorials", "Authentication Implementation", "Production Deployment"],
-                practice: ["Full-stack challenges", "Integration exercises", "Performance optimization"],
-                tools: ["Heroku", "Netlify", "Jest", "Cypress"]
+            'Phase 4: Full-Stack Integration': {
+                'Documentation': [
+                    'MERN Stack Guide',
+                    'Authentication Best Practices',
+                    'Deployment Guides'
+                ],
+                'Tutorials': [
+                    'Full-Stack Development',
+                    'JWT Authentication',
+                    'Production Deployment'
+                ],
+                'Tools': [
+                    'Git & GitHub',
+                    'Docker',
+                    'AWS/Netlify/Vercel'
+                ]
             },
-            "Phase 5: Advanced Topics": {
-                documentation: ["Advanced React Patterns", "Performance Optimization", "Security Best Practices"],
-                tutorials: ["Advanced JavaScript Concepts", "System Design Basics", "Portfolio Development"],
-                practice: ["Advanced coding challenges", "System design exercises", "Code review practice"],
-                tools: ["Lighthouse", "Webpack Bundle Analyzer", "GitHub Actions", "Docker"]
+            'Phase 5: Advanced Topics & Portfolio': {
+                'Documentation': [
+                    'Advanced React Patterns',
+                    'Performance Optimization',
+                    'Portfolio Best Practices'
+                ],
+                'Tutorials': [
+                    'System Design Basics',
+                    'Code Review Guidelines',
+                    'Career Development'
+                ],
+                'Tools': [
+                    'Testing Frameworks',
+                    'CI/CD Pipelines',
+                    'Analytics Tools'
+                ]
             }
         };
 
-        const container = document.getElementById('resources-content');
-        if (!container) return;
-        
-        container.innerHTML = Object.entries(resources).map(([phase, categories]) => `
-            <div class="resource-phase">
-                <h2>${phase}</h2>
-                <div class="resource-categories">
+        Object.entries(resources).forEach(([phaseName, categories]) => {
+            const phaseElement = document.createElement('div');
+            phaseElement.className = 'resources-phase';
+            phaseElement.innerHTML = `
+                <h2 class="resources-phase-title">${phaseName}</h2>
+                <div class="resources-grid">
                     ${Object.entries(categories).map(([category, items]) => `
                         <div class="resource-category">
-                            <h3>${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-                            <ul class="resource-list">
-                                ${items.map(item => `<li><a href="#" target="_blank">${item}</a></li>`).join('')}
-                            </ul>
+                            <h4>${category}</h4>
+                            <div class="resource-list">
+                                ${items.map(item => `<a href="#" class="resource-item" target="_blank">${item}</a>`).join('')}
+                            </div>
                         </div>
                     `).join('')}
                 </div>
-            </div>
-        `).join('');
+            `;
+            
+            resourcesContent.appendChild(phaseElement);
+        });
     }
 
     // Settings
     setupSettings() {
-        const startDateEl = document.getElementById('start-date');
-        const dailyGoalEl = document.getElementById('daily-goal');
-        const themeSelectEl = document.getElementById('theme-select');
-        
-        if (startDateEl) startDateEl.value = this.data.startDate;
-        if (dailyGoalEl) dailyGoalEl.value = this.data.dailyGoal;
-        if (themeSelectEl) themeSelectEl.value = this.data.theme;
-    }
-
-    exportData() {
-        const dataStr = JSON.stringify(this.data, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(dataBlob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = '100-days-progress.json';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        this.showToast('Progress data exported successfully!', 'success');
-    }
-
-    resetProgress() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            this.data = this.getDefaultData();
-            this.currentDay = 1;
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('change', (e) => {
+            this.currentTheme = e.target.value;
+            this.applyTheme();
             this.saveData();
-            this.renderDashboard();
-            this.renderDailyTracker();
-            this.showToast('Progress reset successfully!', 'success');
-        }
+        });
+
+        // Export data
+        document.getElementById('export-data').addEventListener('click', () => {
+            this.exportData();
+        });
+
+        // Reset progress
+        document.getElementById('reset-progress').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        });
+
+        // Modal handlers
+        document.getElementById('modal-overlay').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.add('hidden');
+        });
+
+        document.getElementById('cancel-reset').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.add('hidden');
+        });
+
+        document.getElementById('confirm-reset').addEventListener('click', () => {
+            this.resetAllProgress();
+            document.getElementById('reset-modal').classList.add('hidden');
+        });
     }
 
     applyTheme() {
-        const theme = this.data.theme;
-        if (theme === 'system') {
+        document.getElementById('theme-toggle').value = this.currentTheme;
+        
+        if (this.currentTheme === 'system') {
             document.documentElement.removeAttribute('data-color-scheme');
         } else {
-            document.documentElement.setAttribute('data-color-scheme', theme);
+            document.documentElement.setAttribute('data-color-scheme', this.currentTheme);
         }
     }
 
-    // Utility Functions
-    showToast(message, type = 'success') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
+    exportData() {
+        const data = {
+            exportDate: new Date().toISOString(),
+            currentDay: this.currentDay,
+            completedDays: Array.from(this.completedDays),
+            totalXP: this.totalXP,
+            currentStreak: this.currentStreak,
+            totalHours: this.totalHours,
+            notes: this.notes,
+            completedTasks: this.completedTasks,
+            achievements: Array.from(this.achievements)
+        };
         
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
         
-        container.appendChild(toast);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `100-days-code-challenge-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    resetAllProgress() {
+        localStorage.removeItem('codeChallenge');
+        this.currentDay = 1;
+        this.completedDays = new Set();
+        this.totalXP = 0;
+        this.currentStreak = 0;
+        this.totalHours = 0;
+        this.notes = {};
+        this.completedTasks = {};
+        this.achievements = new Set();
+        this.updateAllViews();
+    }
+
+    // Helper Methods
+    getDayData(day) {
+        // Find the closest curriculum entry
+        const curriculumItem = curriculum.curriculum.find(item => item.day === day) || 
+                               curriculum.curriculum.find(item => item.day <= day) ||
+                               curriculum.curriculum[0];
         
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
+        return curriculumItem;
+    }
+
+    getCurrentPhase() {
+        const currentPhaseIndex = Math.floor((this.currentDay - 1) / 20);
+        return curriculum.phases[Math.min(currentPhaseIndex, curriculum.phases.length - 1)];
+    }
+
+    getPhaseProgress(phase) {
+        const [start, end] = phase.days.split('-').map(Number);
+        const completed = Array.from(this.completedDays).filter(day => day >= start && day <= end).length;
+        const total = end - start + 1;
+        
+        return {
+            completed,
+            total,
+            percentage: (completed / total) * 100
+        };
+    }
+
+    addXP(amount) {
+        this.totalXP += amount;
+    }
+
+    updateStreak() {
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        
+        // Simple streak logic - increment if completing consecutive days
+        if (this.completedDays.size > 0) {
+            this.currentStreak++;
+        }
+    }
+
+    checkAchievements() {
+        Object.entries(curriculum.milestones).forEach(([name, milestone]) => {
+            if (this.completedDays.has(milestone.day) && !this.achievements.has(name)) {
+                this.achievements.add(name);
+                this.addXP(milestone.xp);
+            }
+        });
+    }
+
+    updateRecentAchievements() {
+        const achievementsContainer = document.getElementById('recent-achievements');
+        const recentAchievements = Array.from(this.achievements).slice(-3);
+        
+        if (recentAchievements.length === 0) {
+            achievementsContainer.innerHTML = '<div class="achievement-placeholder">Complete your first day to unlock achievements!</div>';
+            return;
+        }
+        
+        achievementsContainer.innerHTML = recentAchievements.map(achievementName => {
+            const milestone = curriculum.milestones[achievementName];
+            return `
+                <div class="achievement-item">
+                    <div class="achievement-badge">${milestone.badge}</div>
+                    <div class="achievement-info">
+                        <h4>${achievementName}</h4>
+                        <p class="achievement-description">${milestone.description}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    updateAllViews() {
+        this.updateDashboard();
+        this.updateDailyTracker();
+        this.updateProgress();
+        this.updateProjects();
+        this.updateResources();
     }
 }
 
-// Initialize the app when DOM is loaded
+// Curriculum Data
+const curriculum = {
+    "curriculum": [
+        {"day": 1, "topic": "HTML Fundamentals", "subtopics": ["HTML structure", "Basic tags", "Document setup"], "project": "Create your first HTML page", "difficulty": "Beginner", "phase": "Phase 1: Web Fundamentals", "estimated_hours": 2},
+        {"day": 2, "topic": "HTML Elements & Attributes", "subtopics": ["Semantic HTML", "Attributes", "Forms basics"], "project": "Personal info form", "difficulty": "Beginner", "phase": "Phase 1: Web Fundamentals", "estimated_hours": 2},
+        {"day": 25, "topic": "Phase 1 Project", "subtopics": ["Integration", "Testing", "Documentation"], "project": "Complete responsive website with JS", "difficulty": "Intermediate", "phase": "Phase 1: Web Fundamentals", "estimated_hours": 3},
+        {"day": 45, "topic": "Phase 2 Project", "subtopics": ["Integration", "Optimization", "Documentation"], "project": "Complete React application", "difficulty": "Advanced", "phase": "Phase 2: Advanced Frontend", "estimated_hours": 4},
+        {"day": 70, "topic": "Phase 3 Project", "subtopics": ["Integration", "Deployment prep", "Review"], "project": "Complete backend application", "difficulty": "Advanced", "phase": "Phase 3: Backend & APIs", "estimated_hours": 4},
+        {"day": 90, "topic": "Phase 4 Project", "subtopics": ["Integration", "Testing", "Documentation"], "project": "Complete MERN application", "difficulty": "Advanced", "phase": "Phase 4: Full-Stack Integration", "estimated_hours": 4},
+        {"day": 100, "topic": "Celebration & Next Steps", "subtopics": ["Portfolio review", "Achievement reflection", "Career planning"], "project": "100 Days Completion Showcase", "difficulty": "Advanced", "phase": "Phase 5: Advanced Topics & Portfolio", "estimated_hours": 4}
+    ],
+    "milestones": {
+        "Week 1 Champion": {"day": 7, "description": "Complete first week of HTML/CSS", "badge": "🏆", "xp": 100},
+        "JavaScript Explorer": {"day": 20, "description": "Master JavaScript fundamentals", "badge": "🔍", "xp": 200},
+        "Frontend Warrior": {"day": 25, "description": "Complete Phase 1 - Web Fundamentals", "badge": "⚔️", "xp": 500},
+        "React Ninja": {"day": 40, "description": "Master React fundamentals", "badge": "🥷", "xp": 300},
+        "Frontend Master": {"day": 45, "description": "Complete Phase 2 - Advanced Frontend", "badge": "🎯", "xp": 750},
+        "Backend Explorer": {"day": 55, "description": "Learn Node.js and databases", "badge": "🚀", "xp": 400},
+        "API Architect": {"day": 65, "description": "Build complete APIs", "badge": "🏗️", "xp": 600},
+        "Backend Master": {"day": 70, "description": "Complete Phase 3 - Backend & APIs", "badge": "🛡️", "xp": 1000},
+        "Full-Stack Hero": {"day": 85, "description": "Deploy complete MERN application", "badge": "🦸", "xp": 800},
+        "Integration Expert": {"day": 90, "description": "Complete Phase 4 - Full-Stack Integration", "badge": "🔗", "xp": 1200},
+        "Code Master": {"day": 100, "description": "Complete 100 Days of Code Challenge!", "badge": "👑", "xp": 2000}
+    },
+    "phases": [
+        {"name": "Phase 1: Web Fundamentals", "days": "1-25", "topics": "HTML, CSS, JavaScript basics, responsive design"},
+        {"name": "Phase 2: Advanced Frontend", "days": "26-45", "topics": "ES6+, React, advanced JavaScript, state management"},
+        {"name": "Phase 3: Backend & APIs", "days": "46-70", "topics": "Node.js, Express, databases, REST APIs"},
+        {"name": "Phase 4: Full-Stack Integration", "days": "71-90", "topics": "MERN stack, authentication, deployment"},
+        {"name": "Phase 5: Advanced Topics & Portfolio", "days": "91-100", "topics": "Advanced patterns, DevOps, portfolio completion"}
+    ],
+    "projects": [
+        {"day": 25, "name": "Responsive Portfolio Website", "description": "Personal portfolio with HTML, CSS, and JavaScript", "technologies": ["HTML5", "CSS3", "JavaScript", "Responsive Design"], "difficulty": "Beginner"},
+        {"day": 45, "name": "React Task Management App", "description": "Full-featured task manager built with React", "technologies": ["React", "React Router", "Context API", "Local Storage"], "difficulty": "Intermediate"},
+        {"day": 70, "name": "RESTful API with Authentication", "description": "Complete backend API with user authentication", "technologies": ["Node.js", "Express", "MongoDB", "JWT", "Bcrypt"], "difficulty": "Advanced"},
+        {"day": 90, "name": "Full-Stack MERN Application", "description": "Complete web application with frontend and backend", "technologies": ["MongoDB", "Express", "React", "Node.js", "JWT"], "difficulty": "Advanced"},
+        {"day": 100, "name": "Capstone Portfolio Project", "description": "Showcase project demonstrating all learned skills", "technologies": ["Full MERN Stack", "Additional libraries", "DevOps tools"], "difficulty": "Expert"}
+    ],
+    "tasks": [
+        {"task": "Review daily topic", "estimated_time": "30 min", "completed": false},
+        {"task": "Watch tutorial/read documentation", "estimated_time": "45 min", "completed": false},
+        {"task": "Code along with examples", "estimated_time": "60 min", "completed": false},
+        {"task": "Build daily project", "estimated_time": "90 min", "completed": false},
+        {"task": "Test and debug", "estimated_time": "30 min", "completed": false},
+        {"task": "Document learning", "estimated_time": "15 min", "completed": false},
+        {"task": "Update progress", "estimated_time": "10 min", "completed": false}
+    ]
+};
+
+// Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    window.codingApp = new CodingChallengeApp();
+    window.challengeTracker = new ChallengeTracker();
 });
